@@ -1,0 +1,715 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Nadyne's Tracker</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    /* Neutrals */
+    --paper:#FFFFFF; --bg-subtle:#FAFAFA; --card:#FFFFFF; --hover:#F6F6F5;
+    --ink:#1F2023; --ink2:#6B6F76; --ink3:#9AA1A9; --faint:#C4C8CE;
+    --rule:#ECECEC; --rule2:#E2E2E2; --wash:#F6F6F5;
+    /* Single accent */
+    --accent:#5E6AD2; --accent-ink:#4E59BE; --accent-subtle:#EFF0FB;
+    /* Muted status */
+    --open:#5B7A63; --watch:#9A7B3E; --inv:#7C8591;
+    --pill-green-bg:#ECF2ED; --pill-green-tx:#4C6B55;
+    --pill-amber-bg:#F4EFE5; --pill-amber-tx:#6E5C33;
+    --pill-red-bg:#F3EAE6;   --pill-red-tx:#8A5140;
+    --pill-gray-bg:#EEF0F2;  --pill-gray-tx:#57616F;
+    /* System */
+    --radius:8px; --radius-sm:6px; --t:150ms ease;
+    --serif:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5;letter-spacing:-0.006em;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+  ::selection{background:var(--accent-subtle);}
+  .tnum{font-variant-numeric:tabular-nums;}
+  .wrap{max-width:1120px;margin:0 auto;padding:48px 32px 112px;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;text-underline-offset:2px;}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+  /* password gate */
+  .gate{position:fixed;inset:0;background:var(--paper);display:flex;align-items:center;justify-content:center;z-index:100;}
+  .gate.hide{display:none;}
+  .gatebox{width:100%;max-width:300px;text-align:center;padding:24px;}
+  .gatemono{width:44px;height:44px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:15px;margin:0 auto 20px;}
+  .gatelab{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-bottom:16px;}
+  .gate input{width:100%;border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:11px 13px;font-family:var(--sans);font-size:14px;color:var(--ink);text-align:center;transition:border-color var(--t),box-shadow var(--t);}
+  .gate input::placeholder{color:var(--ink3);}
+  .gate input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .gate button{width:100%;margin-top:10px;background:var(--accent);color:#fff;border:0;border-radius:var(--radius-sm);padding:11px;font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;transition:background var(--t);}
+  .gate button:hover{background:var(--accent-ink);}
+  .gateerr{color:var(--pill-red-tx);font-size:12px;height:18px;margin-top:8px;}
+
+  /* nav */
+  .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--rule);margin-bottom:32px;flex-wrap:wrap;}
+  .brand{display:flex;align-items:center;gap:10px;}
+  .monogram{width:30px;height:30px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}
+  .brandname{font-size:16px;font-weight:600;letter-spacing:-0.01em;}
+  .navtabs{display:flex;gap:24px;}
+  .navtabs button{border:0;background:0;padding:4px 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;position:relative;transition:color var(--t);}
+  .navtabs button:hover{color:var(--ink);}
+  .navtabs button.on{color:var(--ink);}
+  .navtabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-17px;height:2px;background:var(--accent);border-radius:2px;}
+  .navr{display:flex;align-items:center;gap:14px;}
+  .navr .dateline{font-size:13px;color:var(--ink3);}
+  .rbtn{border:1px solid var(--rule2);background:var(--card);border-radius:var(--radius-sm);font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink2);padding:7px 12px;cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t);}
+  .rbtn:hover{background:var(--hover);color:var(--ink);}
+
+  .page{display:none;} .page.active{display:block;}
+  .cols{display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:start;}
+  @media(max-width:880px){.cols{grid-template-columns:1fr;gap:32px}.rail{order:-1}}
+
+  .pagehead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
+  .ptitle{font-size:20px;font-weight:600;letter-spacing:-0.015em;}
+  .psub{font-size:13px;color:var(--ink3);}
+  .subtabs{display:flex;gap:20px;margin:0 0 4px;}
+  .subtabs button{border:0;background:0;padding:3px 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;position:relative;transition:color var(--t);}
+  .subtabs button.on{color:var(--ink);} .subtabs button.on::after{content:"";position:absolute;left:0;right:0;bottom:-9px;height:2px;background:var(--accent);border-radius:2px;}
+  .subtabs button:hover{color:var(--ink);}
+  .subtabs .tc{color:var(--faint);font-size:11px;margin-left:3px;font-variant-numeric:tabular-nums;}
+  .barrow{display:flex;align-items:center;justify-content:space-between;gap:14px;border-bottom:1px solid var(--rule);padding-bottom:12px;margin-bottom:4px;flex-wrap:wrap;}
+  .search{border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:7px 12px;font-size:13px;font-family:var(--sans);color:var(--ink);width:172px;transition:border-color var(--t),box-shadow var(--t);}
+  .search:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);} .search::placeholder{color:var(--ink3);}
+
+  /* list */
+  .item{border-bottom:1px solid var(--rule);}
+  .row{display:grid;grid-template-columns:28px 1fr auto;gap:16px;align-items:center;padding:16px 8px;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t);}
+  .row:hover{background:var(--hover);}
+  .idx{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums;}
+  .tt{font-size:16px;line-height:1.35;font-weight:600;letter-spacing:-0.011em;color:var(--ink);}
+  .oo{font-size:13px;color:var(--ink2);margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;}
+  .rr{display:flex;align-items:center;gap:14px;white-space:nowrap;}
+  .stt{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);}
+  .sdot{width:7px;height:7px;border-radius:50%;} .sdot.open{background:var(--open)} .sdot.watch{background:var(--watch)} .sdot.inv{background:var(--inv)}
+  .badge{font-size:11px;letter-spacing:.005em;font-weight:500;padding:2px 8px;border-radius:var(--radius-sm);vertical-align:middle;}
+  .b-yes{color:var(--pill-green-tx);background:var(--pill-green-bg);} .b-maybe{color:var(--pill-amber-tx);background:var(--pill-amber-bg);} .b-no{color:var(--pill-red-tx);background:var(--pill-red-bg);}
+  .b-acc{color:var(--pill-green-tx);background:var(--pill-green-bg);} .b-den{color:var(--pill-red-tx);background:var(--pill-red-bg);} .b-sub,.b-wait,.b-toapply{color:var(--pill-amber-tx);background:var(--pill-amber-bg);}
+  .catgap{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);font-weight:600;padding:24px 8px 10px;border-bottom:1px solid var(--rule);margin-top:8px;display:flex;justify-content:space-between;}
+  .catgap:first-child{margin-top:0;} .catgap .c{color:var(--faint);font-weight:500;}
+
+  .detail{max-height:0;overflow:hidden;transition:max-height .3s ease;} .detail.open{max-height:5000px;}
+  .detailin{padding:4px 8px 28px 52px;} @media(max-width:520px){.detailin{padding-left:8px}}
+  .why{font-size:14px;line-height:1.6;color:var(--ink2);max-width:64ch;margin:4px 0 22px;}
+  .facts{display:flex;gap:32px;flex-wrap:wrap;margin-bottom:24px;}
+  .lab{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-bottom:8px;font-weight:500;}
+  .val{font-size:13px;color:var(--ink);}
+  .dots{display:inline-flex;gap:4px;} .d{width:6px;height:6px;border-radius:50%;background:var(--rule2);} .d.f{background:var(--ink2);}
+  .ctrlbar{display:flex;align-items:center;gap:12px;margin:6px 0 12px;flex-wrap:wrap;}
+  .seg{display:inline-flex;border:1px solid var(--rule2);border-radius:var(--radius-sm);overflow:hidden;}
+  .seg button{border:0;border-right:1px solid var(--rule2);background:var(--card);font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink2);padding:7px 14px;cursor:pointer;transition:background var(--t),color var(--t);}
+  .seg button:last-child{border-right:0} .seg button:hover{background:var(--hover);color:var(--ink)} .seg button.on{background:var(--accent);color:#fff}
+  .seg.yes button.on{background:var(--pill-green-tx);} .seg.no button.on{background:var(--pill-red-tx);}
+  .clab{font-size:13px;color:var(--ink3);}
+  .dates{display:flex;gap:24px;margin:16px 0 2px;flex-wrap:wrap;}
+  .dates label{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);display:flex;flex-direction:column;gap:8px;font-weight:500;}
+  .dates input{border:1px solid var(--rule2);border-radius:var(--radius-sm);padding:8px 10px;font-family:var(--sans);font-size:13px;color:var(--ink);background:var(--card);transition:border-color var(--t),box-shadow var(--t);}
+  .dates input:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .note{display:block;width:100%;max-width:64ch;border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:10px 12px;font-family:var(--sans);font-size:13px;line-height:1.5;color:var(--ink);resize:vertical;min-height:44px;margin-top:14px;transition:border-color var(--t),box-shadow var(--t);}
+  .note::placeholder{color:var(--ink3);}
+  .note:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .linkrow{display:flex;align-items:center;gap:16px;margin-top:20px;flex-wrap:wrap;}
+  .btnink{background:var(--accent);color:#fff;border:0;border-radius:var(--radius-sm);padding:9px 15px;font-family:var(--sans);font-size:13px;font-weight:500;text-decoration:none;cursor:pointer;transition:background var(--t);}
+  .btnink:hover{background:var(--accent-ink);text-decoration:none;}
+  .btnghost{border:1px solid var(--rule2);background:var(--card);border-radius:var(--radius-sm);padding:8px 14px;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;text-decoration:none;transition:background var(--t),color var(--t);}
+  .btnghost:hover{background:var(--hover);color:var(--ink);text-decoration:none;}
+  .link{border:0;background:0;color:var(--accent);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;padding:0;} .link:hover{text-decoration:underline;text-underline-offset:2px;}
+
+  /* write page cards */
+  .wcard{border:1px solid var(--rule);border-radius:var(--radius);background:var(--card);padding:22px 24px;margin-bottom:16px;}
+  .wtop{display:flex;justify-content:space-between;align-items:baseline;gap:14px;flex-wrap:wrap;}
+  .wname{font-size:16px;font-weight:600;letter-spacing:-0.011em;} .worg{font-size:13px;color:var(--ink3);margin-top:3px;}
+  .qa{margin:18px 0;} .q{font-weight:600;font-size:14px;}
+  .dans{display:block;width:100%;border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--bg-subtle);padding:11px 13px;font-family:var(--sans);font-size:13px;line-height:1.55;color:var(--ink);resize:vertical;min-height:96px;margin-top:8px;transition:border-color var(--t),box-shadow var(--t);}
+  .dans:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);background:var(--card);}
+  .dansbtns{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;}
+  .mini{border:1px solid var(--rule2);background:var(--card);border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--ink2);padding:6px 11px;cursor:pointer;font-family:var(--sans);transition:background var(--t),color var(--t);} .mini:hover{color:var(--ink);background:var(--hover);}
+  .empty{color:var(--ink2);font-size:15px;padding:40px 8px;}
+  .empty small{display:block;font-size:13px;color:var(--ink3);margin-top:8px;}
+
+  /* rail */
+  .rail h3{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin:0 0 16px;}
+  .rail .block{margin-bottom:36px;}
+  .calhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+  .calhead .m{font-size:14px;font-weight:600;}
+  .calnav{display:flex;gap:4px;}
+  .calnav button{border:1px solid var(--rule);background:var(--card);color:var(--ink2);font-size:14px;cursor:pointer;width:28px;height:28px;border-radius:var(--radius-sm);transition:background var(--t),color var(--t);} .calnav button:hover{color:var(--ink);background:var(--hover);}
+  .cal{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+  .cal .wd{text-align:center;font-size:10px;letter-spacing:.02em;text-transform:uppercase;color:var(--ink3);padding-bottom:8px;font-weight:500;}
+  .c{min-height:50px;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px 4px;font-size:12px;color:var(--ink2);font-variant-numeric:tabular-nums;border-radius:var(--radius-sm);}
+  .c.mut{color:var(--faint)} .c.today{box-shadow:inset 0 0 0 1px var(--accent);color:var(--accent);font-weight:600;}
+  .c.has{color:var(--ink);font-weight:600;}
+  .cev{width:100%;font-size:10px;line-height:1.2;font-weight:500;background:var(--accent-subtle);color:var(--accent-ink);border-radius:4px;padding:2px 4px;text-align:left;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;}
+  .cev.est{background:transparent;color:var(--accent-ink);box-shadow:inset 0 0 0 1px var(--accent);}
+  .cev.more{background:transparent;color:var(--ink3);padding:1px 0 0;box-shadow:none;}
+  .calpick{margin-top:16px;}
+  .cle{display:grid;grid-template-columns:auto 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--rule);} .cle:first-child{border-top:0;}
+  .cled{color:var(--ink);white-space:nowrap;font-size:12px;font-weight:600;font-variant-numeric:tabular-nums;padding-top:1px;}
+  .clen{color:var(--ink);font-size:13px;font-weight:500;line-height:1.35;} .cle em{color:var(--ink3);font-style:normal;font-weight:400;}
+  .clorg{display:block;font-size:12px;color:var(--ink3);font-weight:400;margin-top:1px;}
+  .calempty{color:var(--ink3);font-size:13px;padding:8px 0;line-height:1.5;}
+  .up .upi{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--rule);} .up .upi:first-child{border-top:0}
+  .upi .dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex:none;background:var(--accent)} .upi .dot.est{background:0;box-shadow:inset 0 0 0 1px var(--accent)} .upi .dot.roll{background:var(--ink3)}
+  .upi .n{font-size:13px;font-weight:500;line-height:1.4;color:var(--ink)} .upi .uorg{font-size:12px;color:var(--ink3);margin-top:1px} .upi .dd{font-size:12px;color:var(--ink3);margin-top:2px}
+
+  /* résumé modal */
+  .rov{position:fixed;inset:0;background:rgba(31,32,35,.4);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;z-index:80;overflow:auto;} .rov.show{display:flex;}
+  .rpanel{background:var(--paper);border:1px solid var(--rule);border-radius:var(--radius);max-width:980px;width:100%;padding:30px 34px 36px;box-shadow:0 16px 48px rgba(31,32,35,.14);}
+  .rhead{display:flex;align-items:baseline;justify-content:space-between;} .rtitle{font-size:20px;font-weight:600;letter-spacing:-0.015em;}
+  .rx{border:0;background:0;font-size:13px;color:var(--ink3);cursor:pointer;} .rx:hover{color:var(--ink);}
+  .rsub{color:var(--ink2);font-size:13px;line-height:1.6;max-width:66ch;margin:6px 0 20px;}
+  .rverbar{display:flex;gap:10px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+  .rverbar select,.rnameinp{border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);font-size:13px;color:var(--ink);padding:8px 10px;font-family:var(--sans);transition:border-color var(--t),box-shadow var(--t);} .rnameinp{width:190px;}
+  .rverbar select:focus,.rnameinp:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .rgrid{display:grid;grid-template-columns:1fr 300px;gap:28px;align-items:start;} @media(max-width:760px){.rgrid{grid-template-columns:1fr;}}
+  .rtext{width:100%;min-height:440px;border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:14px 15px;font-family:var(--sans);font-size:13px;line-height:1.6;color:var(--ink);resize:vertical;transition:border-color var(--t),box-shadow var(--t);} .rtext:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .rgaugewrap{text-align:center;border:1px solid var(--rule);border-radius:var(--radius);padding:18px;margin-bottom:16px;}
+  .rgauge{font-size:44px;font-weight:600;line-height:1;color:var(--ink3);letter-spacing:-0.02em;} .rgauge.good{color:var(--open);} .rgauge.ok{color:var(--watch);} .rgauge.low{color:var(--pill-red-tx);}
+  .rglab{font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);margin-top:8px;font-weight:500;}
+  .rcat{margin-bottom:14px;} .rcatline{display:flex;justify-content:space-between;align-items:baseline;} .rcatn{font-size:12px;color:var(--ink2);font-weight:500;} .rcats{font-size:12px;color:var(--ink3);}
+  .rbar{height:5px;background:var(--wash);border-radius:3px;margin:6px 0;overflow:hidden;} .rbarf{height:100%;border-radius:3px;}
+  .rfind{margin:4px 0 0;padding-left:16px;} .rfind li{font-size:12px;color:var(--ink3);line-height:1.5;margin-bottom:3px;} .rempty{color:var(--ink3);font-size:13px;padding:18px 0;}
+  .toast{position:fixed;bottom:26px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;font-size:13px;padding:10px 18px;border-radius:var(--radius-sm);opacity:0;transition:all .2s;z-index:90;pointer-events:none;} .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate">
+  <div class="gatebox">
+    <div class="gatelab">Nadyne's Tracker — enter password</div>
+    <input id="gatepw" type="password" placeholder="Password" onkeydown="if(event.key==='Enter')tryGate()" autofocus>
+    <button onclick="tryGate()">Enter</button>
+    <div class="gateerr" id="gateerr"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <div class="nav">
+    <div class="brand"><span class="brandname">Nadyne's Tracker</span></div>
+    <div class="navtabs" id="navtabs">
+      <button data-p="discover" class="on">Discover</button>
+      <button data-p="write">Apply</button>
+      <button data-p="history">History</button>
+    </div>
+    <div class="navr">
+      <button class="rbtn" onclick="exportData()">Export</button>
+      <button class="rbtn" onclick="document.getElementById('importFile').click()">Import</button>
+      <button class="rbtn" onclick="openResume()">Résumé</button>
+      <span class="dateline">Nadyne Apung</span>
+      <input type="file" id="importFile" accept="application/json" style="display:none" onchange="if(this.files[0])importData(this.files[0])">
+    </div>
+  </div>
+
+  <div id="privbanner" style="display:none;font-size:13px;line-height:1.5;color:var(--ink2);background:var(--accent-subtle);border:1px solid var(--rule);border-radius:8px;padding:12px 16px;margin-bottom:24px;">Your résumé and application history are stored only in this browser — nothing personal is published online. <button class="link" onclick="document.getElementById('importFile').click()">Import your backup file</button> to load them onto this device.</div>
+
+  <!-- DISCOVER -->
+  <section class="page active" id="page-discover">
+    <div class="cols">
+      <main>
+        <div class="pagehead"><div class="ptitle">Discover</div><div class="psub" id="disc-sub"></div></div>
+        <div class="barrow">
+          <div class="subtabs" id="disc-tabs">
+            <button data-f="new" class="on">New <span class="tc" data-c="new">0</span></button>
+            <button data-f="yes">Yes <span class="tc" data-c="yes">0</span></button>
+            <button data-f="maybe">Maybe <span class="tc" data-c="maybe">0</span></button>
+            <button data-f="no">Dismissed <span class="tc" data-c="no">0</span></button>
+            <button data-f="all">All <span class="tc" data-c="all">0</span></button>
+          </div>
+          <input class="search" id="disc-search" placeholder="Search">
+        </div>
+        <div id="disc-list"></div>
+      </main>
+      <aside class="rail">
+        <div class="block">
+          <div class="calhead"><span class="m" id="calTitle">Month</span><span class="calnav"><button onclick="calMove(-1)">‹</button><button onclick="calMove(1)">›</button></span></div>
+          <div class="cal" id="cal"></div>
+          <div class="calpick" id="calPick"></div>
+        </div>
+        <div class="block"><h3>Upcoming deadlines</h3><div class="up" id="up"></div></div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- WRITE -->
+  <section class="page" id="page-write">
+    <div class="pagehead"><div class="ptitle">Apply</div><div class="psub">Applications for the opportunities you said “Yes” to. Edits save automatically.</div></div>
+    <div id="write-list"></div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="page" id="page-history">
+    <div class="pagehead"><div class="ptitle">History</div><div class="psub">Your past applications and anything you submit through the app — track what’s pending, accepted, or denied.</div></div>
+    <div class="barrow" style="justify-content:flex-end"><input class="search" id="hist-search" placeholder="Search" oninput="renderHistory()"></div>
+    <div id="hist-list"></div>
+  </section>
+
+</div>
+
+<div class="rov" id="rov">
+  <div class="rpanel">
+    <div class="rhead"><div class="rtitle">Résumé workbench</div><button class="rx" onclick="closeResume()">Close ✕</button></div>
+    <div class="rsub">Your master résumé and tailored versions. Instant score with specific fixes; use “Get Claude’s deep audit” for a full review.</div>
+    <div class="rverbar">
+      <select id="rverSel" onchange="selectVersion(this.value)"></select>
+      <input id="rname" class="rnameinp" onchange="renameVersion(this.value)" placeholder="Version name">
+      <button class="mini" onclick="addVersion()">+ New version</button>
+      <button class="mini" onclick="delVersion()">Delete</button>
+    </div>
+    <div class="rgrid">
+      <textarea id="rtext" class="rtext" placeholder="Paste your résumé text here…" oninput="setResumeText(this.value)"></textarea>
+      <div>
+        <div class="rgaugewrap"><div class="rgauge" id="rgauge">—</div><div class="rglab">Résumé score</div></div>
+        <div id="raudit"></div>
+        <button class="btnink" style="width:100%;margin-top:14px;text-align:center" onclick="resumeFeedback()">Get Claude’s deep audit</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="toast" class="toast"></div>
+
+<script>
+/* Private data (résumé + application history) lives ONLY in this browser via
+   localStorage — it is never written to the published file or the repo. */
+function loadPriv(k,f){ try{ const v=localStorage.getItem('nadyne.priv.'+k); return v!=null?JSON.parse(v):f; }catch(e){ return f; } }
+function savePriv(k,v){ try{ localStorage.setItem('nadyne.priv.'+k, JSON.stringify(v)); }catch(e){} }
+const DATA = [
+  { id:"ohchr-network", elig:"✅ Open to all nationalities · rolling", name:"Global Youth Network for Human Rights", org:"UN Human Rights Office (OHCHR)",
+    status:"OPEN", deadline:"Rolling — apply anytime", date:null, est:false, source:"OHCHR",
+    link:"https://www.ohchr.org", prestige:5, difficulty:2, match:5, live:true,
+    why:"Worldwide UN youth human-rights community feeding into consultations & campaigns. Core human-rights fit, low barrier.",
+    tailored:`NADYNE APUNG — Los Angeles, CA · LinkedIn
+
+PROFILE
+Indonesian youth advocate working where human rights meet technology — online-safety policy, digital-age child protection, and technology-facilitated gender violence — bringing an evidence-based, Global-South perspective to OHCHR's youth human-rights work.
+
+HUMAN-RIGHTS & ADVOCACY
+TikTok — Youth Council Member, Indonesia & US (Nov 2024 – Present)
+- 1 of 28 international members (4 Indonesian reps) shaping online-safety protections for 32.5M youth; London Youth Summit delegate with Trust & Safety and Policy teams.
+Planned Parenthood — Digital Youth Advisory Board (Mar 2026 – Present)
+- Advance sexual & reproductive health with a focus on technology-facilitated sexual violence; make outreach more inclusive by surfacing barriers to care.
+US Embassy to Indonesia — Ambassador's Youth Diplomacy Academy (Jan – Aug 2025)
+- Trained with Ambassador Kamala Lakhdir and senior diplomats; site visits to the ASEAN Secretariat and Indonesian MFA; capstone bridging Indonesian and US communities.
+Singapore Ministry of Home Affairs — Criminal Psychology Research Assistant (May – Jul 2026)
+- Researched scam vulnerability and the danger of false positives in online child-exploitation cases; presented to the Singapore Police Force.
+
+RESEARCH & DATA
+Coffee Meets Bagel — PM Intern (2026): multilingual LLM evaluation (EN/ID), SQL, dashboards across 10 markets.
+Decision Neuroscience Lab, CMC — Research Assistant (2025–26): managed experimental data from 100+ participants.
+
+EDUCATION
+Pomona College — BA, Psychological Science & Religious Studies (2024–2029).
+
+LANGUAGES: English & Indonesian (native), Malay, French.`,
+    qa:[
+      {q:"Why do you want to join the Global Youth Network for Human Rights?",
+       a:"I work where human rights meet technology and young people. On TikTok's Youth Council I helped shape online-safety protections for 32.5 million youth, and through criminal-psychology research with Singapore's Ministry of Home Affairs I studied how scams and online child-exploitation cases harm people — and how false positives harm them too. I want to bring that evidence-based, ground-level view into OHCHR's consultations and carry it back to youth in Indonesia and the US."},
+      {q:"Describe your experience advancing human rights at a local or national level.",
+       a:"Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs; on Planned Parenthood's Digital Youth Advisory Board I focus on technology-facilitated sexual violence and more inclusive access to care. Across these I turn community needs into concrete recommendations."},
+      {q:"Which human-rights issue matters most to you and why?",
+       a:"Digital rights and child protection online — building protections that are both effective and rights-respecting, designed with young people rather than only for them."}
+    ] },
+  { id:"unmgcy", elig:"✅ Global · under 30", name:"UN Major Group for Children and Youth (UN MGCY)", org:"United Nations",
+    status:"OPEN", deadline:"Rolling — apply anytime", date:null, est:false, source:"@majorgroupcy",
+    link:"https://www.unmgcy.org/get-involved", prestige:4, difficulty:2, match:4, live:true,
+    why:"The UN's official mechanism for youth to feed into policy (SDGs; child & youth online safety). Free, under-30, no prior engagement. Note: your tracker shows a past application to a UN Major Group role (denied) — confirm this is a fresh opening before reapplying.",
+    qa:[
+      {q:"Why do you want to join UN MGCY?",
+       a:"I want a formal channel to move youth online-safety and child-protection work into UN policy. I've done this in practice — TikTok's Youth Council, research on online child-exploitation, a Planned Parenthood board on tech-facilitated violence — and MGCY is where that becomes structured input to the UN. As an Indonesian in the US, I can help surface underrepresented Southeast Asian perspectives."},
+      {q:"Which thematic cluster interests you?",
+       a:"The digital/technology and health & well-being clusters — online safety, AI governance for young people, and adolescent mental health, which ties to my psychology studies."},
+      {q:"What skills would you contribute?",
+       a:"Data & research (LLM evaluation, SQL, dashboards; three research labs), multilingual advocacy (English & Indonesian native, plus Malay and French), and youth-council experience turning complex issues into clear positions."}
+    ] },
+  { id:"itu-yab", elig:"✅ Open to all nationalities", name:"Secretary-General's Youth Advisory Board", org:"ITU (UN agency for digital technology)",
+    status:"WATCH", deadline:"Between rounds — next call est. Dec 2027", date:"2027-12-01", est:true, source:"ITU",
+    link:"https://www.itu.int/en/action/youth/Pages/itu-secretary-generals-youth-advisory-board.aspx",
+    prestige:5, difficulty:5, match:5, live:false,
+    why:"~12-seat appointed board advising the SG on connectivity, AI, and the digital divide. Open to all nationalities. Marquee fit for your online-safety niche.",
+    qa:[
+      {q:"Why do you want to serve on the Youth Advisory Board? (illustrative)",
+       a:"Connectivity is now a children's-rights issue, and I've worked at exactly that intersection: online-safety policy for 32.5M youth on TikTok's Youth Council, research on online child-exploitation and scam vulnerability, and product/data work evaluating multilingual LLMs. I'd bring a Global-South, youth-safety lens to advice on bridging the digital divide."},
+      {q:"What youth digital issue would you champion? (illustrative)",
+       a:"Safe-by-design standards for minors that work in low-resource, multilingual contexts — youth-tested features and evaluation methods that reduce both under- and over-enforcement, drawing on my research on false positives in child-protection systems."}
+    ] },
+  { id:"amnesty-yoco", elig:"✅ US-based youth — you qualify (LA)", name:"Youth Collective", org:"Amnesty International USA",
+    status:"WATCH", deadline:"Annual — reopens est. Nov 2026", date:"2026-11-15", est:true, source:"@aiusayouth",
+    link:"https://www.amnestyusa.org/get-involved/grassroots-activism/youth/yoco/",
+    prestige:5, difficulty:4, match:5, live:false,
+    why:"Named US youth human-rights advocacy body — prestigious, US-based, defined seat. Your flagged favorite.",
+    qa:[
+      {q:"Why do you want to be part of the Youth Collective? (illustrative)",
+       a:"I want to organize, not just advise. I've built youth-safety protections on a global platform, researched how digital harms and blunt enforcement fall hardest on the vulnerable, and advocated on tech-facilitated sexual violence with Planned Parenthood. The Youth Collective is where I'd channel that into US human-rights campaigning."},
+      {q:"What human-rights issue are you most passionate about? (illustrative)",
+       a:"Digital-age rights: privacy, protection from online exploitation, and free expression for young people — designed with the communities they affect."},
+      {q:"Describe your leadership experience. (illustrative)",
+       a:"1 of 28 international members (and 4 Indonesian reps) on TikTok's Youth Council; London Youth Summit delegate; US Embassy diplomacy training with the ASEAN Secretariat; plus financial-literacy programs for 1,000+ micro-entrepreneurs in Indonesia."}
+    ] },
+  { id:"oecd-youthwise", elig:"❓ Verify OECD-country eligibility", name:"Youthwise (Youth Advisory Board)", org:"OECD",
+    status:"WATCH", deadline:"Annual — opens ~Apr, deadline est. 15 May 2027", date:"2027-05-15", est:true, source:"OECD",
+    link:"https://www.oecd.org/en/about/programmes/youthwise.html",
+    prestige:5, difficulty:5, match:3, live:false,
+    why:"OECD's named youth advisory board; 18–30; ~1-year term shaping OECD policy. Confirm 'OECD country' eligibility (residence vs citizenship).",
+    qa:[
+      {q:"How would you represent youth voice in OECD policy? (illustrative)",
+       a:"By grounding it in data and lived experience. I evaluate multilingual AI systems and build analytics dashboards, and I advise youth bodies on digital safety and health — so I can translate between young people's realities and the evidence policymakers need, especially on the digital economy and youth well-being."},
+      {q:"Which policy area would you focus on? (illustrative)",
+       a:"The digital transition and youth mental health — how AI and platforms reshape work, safety, and well-being for young people, and what guardrails actually help."}
+    ] },
+  { id:"ohchr-youth4rights", elig:"❓ Typically asks ~2 yrs HR experience", name:"Youth4Rights Advisory Group (flagship 12-seat board)", org:"UN Human Rights Office (OHCHR)",
+    status:"WATCH", deadline:"Annual — reopens est. mid-2027", date:"2027-06-15", est:true, source:"OHCHR",
+    link:"https://www.ohchr.org", prestige:5, difficulty:5, match:5, live:false,
+    why:"The flagship 12-seat UN human-rights youth board — highest prestige & selectivity. Note: typically asks ~2 years of human-rights experience.",
+    qa:[
+      {q:"Describe your human-rights experience (2+ years). (illustrative)",
+       a:"Since 2024: TikTok Youth Council (online-safety protections), Planned Parenthood Digital Youth Advisory Board (tech-facilitated sexual violence), US Embassy Youth Diplomacy Academy (ASEAN Secretariat), and criminal-psychology research on online child-exploitation — a consistent through-line of digital-age rights work at national and global levels."},
+      {q:"What would you contribute to the Advisory Group? (illustrative)",
+       a:"A rigorous, Global-South, tech-literate perspective: research skills, multilingual reach (EN/ID native), and experience turning youth input into concrete safeguards."}
+    ] },
+  { id:"lancet-yap", elig:"✅ Global", name:"Youth Advisory Panel — Child & Adolescent Health", org:"The Lancet",
+    status:"INVESTIGATE", deadline:"Window unconfirmed — investigating", date:null, est:false, source:"The Lancet",
+    link:"https://engage.youth.gov/opportunities/youth-advisory-panel-lancet-child-adolescent-health",
+    prestige:5, difficulty:4, match:4, live:false,
+    why:"Named youth advisory/review roles at a top medical journal on adolescent & youth mental health — ties to your psychology thread.",
+    qa:[
+      {q:"Why do you want to advise on adolescent health? (illustrative)",
+       a:"I study Psychological Science and have worked in a decision-neuroscience lab and on youth mental-health-adjacent advocacy. I'd bring research literacy and youth lived experience to how adolescent health evidence is framed and communicated."}
+    ] },
+  { id:"iyd-y20", elig:"✅ Indonesian nationals — you qualify", name:"Y20 Delegate (Youth 20)", org:"Indonesia Youth Diplomacy",
+    status:"WATCH", deadline:"Annual — tracks the G20/Y20 cycle; watch for delegate call", date:null, est:false, source:"@id.youthdiplomacy",
+    link:"https://www.indonesianyouthdiplomacy.org/", prestige:4, difficulty:5, match:5, live:false,
+    why:"Represent Indonesia as a Y20 (G20 youth) delegate — a named, competitive diplomatic seat. Direct fit with your US Embassy diplomacy academy & ASEAN work.",
+    qa:[
+      {q:"Why do you want to represent Indonesia as a Y20 delegate? (illustrative)",
+       a:"Indonesia's voice in global youth policy should come from people who've done real cross-border work. Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs, and I've represented Indonesian youth on TikTok's global Youth Council. I'd bring that bridge — Indonesia, ASEAN, and the US — to the Y20 table."},
+      {q:"What policy priority would you bring? (illustrative)",
+       a:"Digital safety and AI governance for young people — an area where Indonesia can lead the Global South. I'd push for youth-tested, multilingual safety standards, drawing on my online-safety and anti-scam research."}
+    ] },
+  { id:"ccswg-yac", elig:"✅ California residents 14–20 — you qualify", name:"CCSWG Youth Advisory Council (California)", org:"California Commission on the Status of Women & Girls",
+    status:"WATCH", deadline:"Annual — 2026–27 closed 15 Jul; reopens ~15 May 2027", date:"2027-05-15", est:true, source:"@ccswg",
+    link:"https://women.ca.gov/ccswg-youth-advisory-council", prestige:3, difficulty:3, match:4, live:false,
+    why:"Defined state-level youth advisory seat on women & girls' policy — local to you in California, gender + teen-mental-health focus. Ages 14–20.",
+    qa:[
+      {q:"Why do you want to join the Youth Advisory Council? (illustrative)",
+       a:"I've advocated on tech-facilitated sexual violence with Planned Parenthood and studied online harms to young people. As a student in California, I want to turn that into state-level policy that protects and empowers young women and girls here."},
+      {q:"What issue affecting young Californians matters most? (illustrative)",
+       a:"Teen mental health and online safety — how digital platforms shape young women's wellbeing, and which protections actually work."}
+    ] },
+  { id:"un-youth-delegate", elig:"✅ Indonesian nationals — you qualify", name:"UN Youth Delegate (Indonesia)", org:"UN Youth Office · national selection",
+    status:"WATCH", deadline:"Country-run selection — watch Indonesian national call", date:null, est:false, source:"@unyouthaffairs",
+    link:"https://social.desa.un.org/issues/youth/un-youth-delegate-programme", prestige:5, difficulty:5, match:5, live:false,
+    why:"Represent your country at the UN General Assembly — the flagship youth-representative seat. Selection runs through national channels (Indonesia).",
+    qa:[
+      {q:"Why do you want to be a UN Youth Delegate? (illustrative)",
+       a:"To carry real youth priorities into the UN, not symbolic ones. I've done the groundwork — global youth-council advocacy, human-rights diplomacy training, research on digital harms — and I'd consult widely across Indonesian youth before speaking on their behalf."},
+      {q:"What would you consult young people on, and how? (illustrative)",
+       a:"I'd run structured consultations — surveys and listening sessions in Indonesian and English — on digital rights, online safety, and mental health, then bring those findings, backed by data, into UN forums."}
+    ] },
+  { id:"civicus-yat", elig:"✅ Global · youth", name:"Youth Action Team", org:"CIVICUS (global civil society alliance)",
+    status:"WATCH", deadline:"Annual — next call est. Jan 2027 (2025 ran in Jul)", date:"2027-01-15", est:true, source:"CIVICUS",
+    link:"https://opportunitydesk.org/tag/civicus-youth-action-team/", prestige:4, difficulty:4, match:4, live:false,
+    why:"Named youth body of a major global civil-society alliance — voting members shaping CIVICUS's youth agenda. Strong civic-space / human-rights fit. Recruits annually (watch for the next call).",
+    qa:[
+      {q:"Why do you want to join the CIVICUS Youth Action Team? (illustrative)",
+       a:"My advocacy has always been about widening who gets heard — youth online-safety policy on TikTok's Council, tech-facilitated-violence work with Planned Parenthood, and human-rights diplomacy through the US Embassy academy. CIVICUS is where that connects to the global fight for civic space, and I'd bring a Southeast Asian, digitally-fluent perspective to it."},
+      {q:"What civic-space issue would you prioritize? (illustrative)",
+       a:"Digital civic space — protecting young people's rights to organize and speak safely online, and pushing back on surveillance and over-enforcement, drawing on my research into online harms and false positives."}
+    ] },
+  { id:"igf-dc-children", elig:"✅ Open to all · rolling", name:"Dynamic Coalition on Children's Rights in the Digital Environment", org:"UN Internet Governance Forum (IGF)",
+    status:"OPEN", deadline:"Rolling — join anytime (open working group)", date:null, est:false, source:"UN IGF",
+    link:"https://www.intgovforum.org/en/content/dynamic-coalition-on-childrens-rights-in-the-digital-environment",
+    prestige:3, difficulty:2, match:5, live:true,
+    why:"Not a selective seat — it's an OPEN, UN-affiliated working group on children's rights & safety online (your exact niche). A way to plug into real UN internet-governance policy now, while the selective boards are between cycles. Join by emailing the focal point and subscribing to the list.",
+    tailored:`NADYNE APUNG — Los Angeles, CA · LinkedIn
+
+PROFILE
+Youth online-safety and child-protection advocate with hands-on policy, research, and data experience — protecting children's rights in digital environments across platforms, government research, and multilingual contexts.
+
+ONLINE SAFETY & CHILD PROTECTION
+TikTok — Youth Council Member, Indonesia & US (Nov 2024 – Present)
+- 1 of 28 international members (4 Indonesian reps) protecting online safety for 32.5M youth; London Youth Summit delegate with Trust & Safety and Policy teams.
+Singapore Ministry of Home Affairs — Criminal Psychology Research Assistant (May – Jul 2026)
+- Self-directed research on scam vulnerability and false positives in online child-exploitation cases; findings presented to the Singapore Police Force.
+Planned Parenthood — Digital Youth Advisory Board (Mar 2026 – Present)
+- Focus on technology-facilitated sexual violence and safer, more inclusive outreach for young people.
+
+DATA & RESEARCH
+Coffee Meets Bagel — PM Intern (2026): audited 4 multilingual LLMs (EN/ID), wrote SQL, built dashboards across 10 markets.
+Decision Neuroscience Lab, CMC (2025–26): managed experimental data from 100+ participants.
+
+EDUCATION
+Pomona College — BA, Psychological Science & Religious Studies (2024–2029).
+
+LANGUAGES: English & Indonesian (native), Malay, French.`,
+    qa:[
+      {q:"Intro email to join the coalition (draft you can send)",
+       a:"Dear Mr. Krause,\n\nI'm Nadyne Apung, an Indonesian undergraduate at Pomona College working on youth online safety and child protection — including TikTok's Youth Council (online-safety policy reaching 32.5M youth), criminal-psychology research on online child-exploitation cases with Singapore's Ministry of Home Affairs, and advocacy on tech-facilitated sexual violence with Planned Parenthood.\n\nI'd like to join the Dynamic Coalition on Children's Rights in the Digital Environment and contribute to its papers and policy work. Could you add me to the mailing list?\n\nThank you,\nNadyne Apung"},
+      {q:"What you'd contribute (illustrative)",
+       a:"A youth and Global-South perspective plus research skills: evidence on online child-exploitation harms and the risk of over-enforcement / false positives, and multilingual (English & Indonesian) reach into Southeast Asian contexts."}
+    ] }
+];
+const PAST = loadPriv('past', []);
+
+/* ---------- password gate ---------- */
+const PASSCODE="i<3ndme";
+function tryGate(){ const v=document.getElementById('gatepw').value; if(v===PASSCODE){ try{sessionStorage.setItem('nadyne.unlock','1');}catch(e){} document.getElementById('gate').classList.add('hide'); } else { document.getElementById('gateerr').textContent='Incorrect password'; } }
+try{ if(sessionStorage.getItem('nadyne.unlock')==='1') document.getElementById('gate').classList.add('hide'); }catch(e){}
+
+/* ---------- helpers ---------- */
+const MON=["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fmt=iso=>{const d=new Date(iso+"T00:00:00");return d.getDate()+" "+MON[d.getMonth()].slice(0,3)+" "+d.getFullYear();};
+const smeta=s=>s==="OPEN"?{c:"open",t:"Open"}:s==="WATCH"?{c:"watch",t:"Watch"}:{c:"inv",t:"Investigate"};
+const dotsHTML=n=>{let h='<span class="dots">';for(let i=1;i<=5;i++)h+=`<span class="d ${i<=n?'f':''}"></span>`;return h+'</span>';};
+const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const pad=i=>String(i).padStart(2,'0');
+const catOf=d=>d.cat||"Organization";
+const CATS=["Organization","Internship","Conference","Miscellaneous"];
+const STATUSES=["To apply","Submitted","Waiting","Accepted","Denied"];
+const HSTATUSES=["Pending","Waiting","Submitted","Accepted","Denied"];
+const stCls=s=>({"Accepted":"b-acc","Denied":"b-den","Submitted":"b-sub","Waiting":"b-wait","To apply":"b-toapply"}[s]||"b-toapply");
+const triLabel=t=>({yes:"Tracker",maybe:"Maybe",no:"Dismissed"}[t]||"");
+const triCls=t=>({yes:"b-yes",maybe:"b-maybe",no:"b-no"}[t]||"");
+function inWindow(d){ if(d.status==='OPEN')return true; if(!d.date)return false; const dt=new Date(d.date+"T00:00:00"); const now=new Date(); now.setHours(0,0,0,0); const days=(dt-now)/86400000; return days>=0&&days<=93; }
+const OPPS=DATA.filter(inWindow);
+const byId=id=>DATA.find(d=>d.id===id);
+
+/* ---------- saved state ---------- */
+const SKEY="nadyne.opps.v1";
+let SAVED={}, STORE_OK=true;
+try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); SAVED=JSON.parse(localStorage.getItem(SKEY)||"{}"); }catch(e){ STORE_OK=false; }
+function persist(){ if(!STORE_OK)return; try{ localStorage.setItem(SKEY, JSON.stringify(SAVED)); }catch(e){} }
+function sv(id){ return SAVED[id]||{}; }
+function cleanup(id){ const s=SAVED[id]; if(s && !s.triage && !s.status && !s.note && !s.appliedOn && !s.announce && !(s.answers&&Object.keys(s.answers).length)) delete SAVED[id]; }
+function setTriage(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].triage = SAVED[id].triage===v?undefined:v; cleanup(id); persist(); renderAll(); }
+function setStatus(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].status = SAVED[id].status===v?undefined:v; cleanup(id); persist(); renderAll(); }
+function clearStatus(id){ if(SAVED[id]){ SAVED[id].status=undefined; cleanup(id); persist(); } renderAll(); toast('Moved back to Discover'); }
+function setField(id,f,v){ SAVED[id]=SAVED[id]||{}; SAVED[id][f]=v||undefined; cleanup(id); persist(); if(f!=='note') renderAll(); }
+function getAnswer(id,j){ const s=SAVED[id]; if(s&&s.answers&&s.answers[j]!=null) return s.answers[j]; const d=byId(id); return d?d.qa[j].a:''; }
+function setAnswer(id,j,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].answers=SAVED[id].answers||{}; SAVED[id].answers[j]=v; persist(); }
+function resetAnswer(id,j){ const s=SAVED[id]; if(s&&s.answers){ delete s.answers[j]; if(!Object.keys(s.answers).length) delete s.answers; cleanup(id); persist(); } const ta=document.getElementById('ta-'+id+'-'+j); if(ta) ta.value=byId(id).qa[j].a; toast('Reset to AI draft'); }
+function answerFeedback(id,j){ const d=byId(id); const p="Give feedback on this application answer and tighten it — keep my voice, cut fluff, strengthen specifics and impact.\n\nOPPORTUNITY: "+d.name+" — "+d.org+"\nQUESTION: "+d.qa[j].q+"\nMY ANSWER:\n"+getAnswer(id,j); copyText(p,"Answer + prompt copied — paste into Claude"); }
+function copyText(t,msg){ try{ navigator.clipboard.writeText(t).then(()=>toast(msg||'Copied')); }catch(e){ toast('Copy unavailable'); } }
+function toast(m){ const e=document.getElementById('toast'); if(!e)return; e.textContent=m; e.classList.add('show'); clearTimeout(window.__tt); window.__tt=setTimeout(()=>e.classList.remove('show'),1900); }
+
+/* ---------- router ---------- */
+let page="discover";
+function showPage(p){ page=p; document.querySelectorAll('.page').forEach(s=>s.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); document.querySelectorAll('#navtabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===p)); window.scrollTo(0,0); renderAll(); }
+document.querySelectorAll('#navtabs button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.p)));
+
+/* ---------- DISCOVER ---------- */
+let discFilter="new", discQ="";
+const openSet=new Set();
+function toggle(id){ openSet.has(id)?openSet.delete(id):openSet.add(id); renderDiscover(); }
+function discItem(d,i){
+  const s=sv(d.id), sm=smeta(d.status), opened=openSet.has(d.id), tri=s.triage;
+  return `<div class="item">
+    <div class="row" onclick="toggle('${d.id}')">
+      <div class="idx tnum">${pad(i)}</div>
+      <div><div class="tt">${d.name}</div><div class="oo">${d.org}${tri?` &nbsp;·&nbsp; <span class="badge ${triCls(tri)}">${triLabel(tri)}</span>`:''}</div></div>
+      <div class="rr"><span class="stt"><span class="sdot ${sm.c}"></span>${sm.t}</span></div>
+    </div>
+    <div class="detail ${opened?'open':''}"><div class="detailin">
+      <div class="why">${d.why}</div>
+      <div class="facts">
+        <div><div class="lab">Deadline</div><div class="val">${d.deadline}</div></div>
+        <div><div class="lab">Prestige</div><div class="val">${dotsHTML(d.prestige)}</div></div>
+        <div><div class="lab">Difficulty</div><div class="val">${dotsHTML(d.difficulty)}</div></div>
+        <div><div class="lab">Portfolio match</div><div class="val">${dotsHTML(d.match)}</div></div>
+        <div><div class="lab">Source</div><div class="val">${d.source}</div></div>
+        <div><div class="lab">Eligibility</div><div class="val">${d.elig||'❓ verify'}</div></div>
+      </div>
+      <div class="ctrlbar">
+        <span class="clab">Add to tracker?</span>
+        <div class="seg yes"><button class="${tri==='yes'?'on':''}" onclick="setTriage('${d.id}','yes')">Yes</button><button class="${tri==='maybe'?'on':''}" onclick="setTriage('${d.id}','maybe')">Maybe</button></div>
+        <div class="seg no"><button class="${tri==='no'?'on':''}" onclick="setTriage('${d.id}','no')">No, dismiss</button></div>
+      </div>
+      <div class="linkrow">
+        <a class="btnghost" href="${d.link}" target="_blank" rel="noopener">Open application ↗</a>
+        ${tri==='yes'?`<button class="link" onclick="showPage('write')">Start your application →</button>`:''}
+      </div>
+    </div></div>
+  </div>`;
+}
+function renderDiscover(){
+  const base=OPPS.filter(d=>!sv(d.id).status); // once you've started applying (status set), it moves to History and leaves Discover
+  const cnt={new:0,yes:0,maybe:0,no:0,all:base.length};
+  base.forEach(d=>{const t=sv(d.id).triage; if(!t)cnt.new++; else cnt[t]=(cnt[t]||0)+1;});
+  document.querySelectorAll('#disc-tabs .tc').forEach(el=>{ el.textContent=cnt[el.dataset.c]||0; });
+  let list=base.filter(d=>{
+    const t=sv(d.id).triage;
+    const okF = discFilter==='new'?!t : discFilter==='all'?true : t===discFilter;
+    const okQ=!discQ||(d.name+' '+d.org+' '+d.why).toLowerCase().includes(discQ);
+    return okF&&okQ;
+  });
+  list.sort((a,b)=>b.match-a.match);
+  let html='',n=0;
+  CATS.forEach(cat=>{ const items=list.filter(d=>catOf(d)===cat); if(!items.length)return; html+=`<div class="catgap">${cat}<span class="c">${pad(items.length)}</span></div>`; items.forEach(d=>{n++;html+=discItem(d,n);}); });
+  const msg = discFilter==='no'?'Nothing dismissed.':discFilter==='yes'?'Nothing marked “Yes” yet.':discFilter==='maybe'?'Nothing marked “Maybe”.':'Nothing new right now.';
+  document.getElementById('disc-list').innerHTML = html || `<div class="empty">${msg}<small>New matches arrive on the daily 9am refresh.</small></div>`;
+  document.getElementById('disc-sub').textContent = OPPS.length+' open or due within 3 months';
+}
+
+/* ---------- WRITE ---------- */
+function writeCard(d){
+  const tail = d.tailored ? `<button class="mini" onclick="useTailored('${d.id}')">View tailored résumé</button>` : '';
+  return `<div class="wcard">
+    <div class="wtop"><div><div class="wname">${d.name}</div><div class="worg">${d.org}</div></div>
+      <div class="linkrow" style="margin:0"><a class="btnghost" href="${d.link}" target="_blank" rel="noopener">Open form ↗</a></div></div>
+    <div class="ctrlbar" style="margin-top:16px">
+      <span class="clab">Tailored résumé</span>${tail}
+      <button class="mini" onclick="tailorHandoff('${d.id}')">Tailor for this with Claude</button>
+    </div>
+    ${d.qa.map((x,j)=>`<div class="qa"><div class="q">${x.q}</div><textarea class="dans" id="ta-${d.id}-${j}" oninput="setAnswer('${d.id}',${j},this.value)">${esc(getAnswer(d.id,j))}</textarea>
+      <div class="dansbtns"><button class="mini" onclick="copyText(document.getElementById('ta-${d.id}-${j}').value,'Copied')">Copy</button><button class="mini" onclick="answerFeedback('${d.id}',${j})">Get Claude's feedback</button><button class="mini" onclick="resetAnswer('${d.id}',${j})">Reset to draft</button></div></div>`).join('')}
+    <div class="linkrow"><button class="btnink" onclick="setStatus('${d.id}','Submitted');showPage('history')">Mark as submitted →</button>
+      <span class="clab">${sv(d.id).status?('Status: '+sv(d.id).status):''}</span></div>
+  </div>`;
+}
+function renderWrite(){
+  const list=DATA.filter(d=>sv(d.id).triage==='yes');
+  document.getElementById('write-list').innerHTML = list.length ? list.map(writeCard).join('')
+    : '<div class="empty">No applications in progress yet.<small>Go to Discover and say “Yes” to an opportunity to start writing here.</small></div>';
+}
+
+/* ---------- HISTORY ---------- */
+const HKEY="nadyne.hist.v1";
+let HSAVED={}; try{ HSAVED=JSON.parse(localStorage.getItem(HKEY)||"{}"); }catch(e){}
+function hpersist(){ if(!STORE_OK)return; try{ localStorage.setItem(HKEY, JSON.stringify(HSAVED)); }catch(e){} }
+function pastVal(p,f){ const o=HSAVED[p.id]||{}; return (o[f]!=null&&o[f]!=='')?o[f]:(p[f]||''); }
+function setPast(id,f,v){ HSAVED[id]=HSAVED[id]||{}; HSAVED[id][f]=v; hpersist(); renderHistory(); }
+function histItems(){
+  const out=[];
+  DATA.forEach(d=>{ const s=sv(d.id); if(s.status) out.push({id:d.id,name:d.name,org:d.org,status:s.status,appliedOn:s.appliedOn||'',announce:s.announce||'',note:s.note||'',kind:'app'}); });
+  (typeof PAST!=='undefined'?PAST:[]).forEach(p=>{ out.push({id:p.id,name:p.name,org:p.org,status:pastVal(p,'status'),appliedOn:pastVal(p,'appliedOn'),announce:pastVal(p,'announce'),note:pastVal(p,'note'),kind:'past'}); });
+  return out;
+}
+function histCard(it){
+  const seg = HSTATUSES.map(x=>`<button class="${it.status===x?'on':''}" onclick="${it.kind==='app'?`setStatus('${it.id}','${x}')`:`setPast('${it.id}','status','${x}')`}">${x}</button>`).join('');
+  const dA = it.kind==='app'?`setField('${it.id}','appliedOn',this.value)`:`setPast('${it.id}','appliedOn',this.value)`;
+  const dR = it.kind==='app'?`setField('${it.id}','announce',this.value)`:`setPast('${it.id}','announce',this.value)`;
+  const nH = it.kind==='app'?`setField('${it.id}','note',this.value)`:`setPast('${it.id}','note',this.value)`;
+  return `<div class="wcard">
+    <div class="wtop"><div><div class="wname">${it.name}</div><div class="worg">${it.org}${it.kind==='past'?' · from your tracker':''}</div></div>
+      ${it.status?`<span class="badge ${stCls(it.status)}">${it.status}</span>`:''}</div>
+    <div class="ctrlbar" style="margin-top:16px"><span class="clab">Status</span><div class="seg">${seg}</div></div>
+    <div class="dates"><label>Applied on<input type="date" value="${it.appliedOn}" onchange="${dA}"></label><label>Result date<input type="date" value="${it.announce}" onchange="${dR}"></label></div>
+    <textarea class="note" placeholder="Notes (interview dates, contacts, follow-ups)…" oninput="${nH}">${esc(it.note)}</textarea>
+    ${it.kind==='app'?`<div class="linkrow"><button class="mini" onclick="clearStatus('${it.id}')">Remove (back to Discover)</button></div>`:''}
+  </div>`;
+}
+function renderHistory(){
+  const items=histItems();
+  const se=document.getElementById('hist-search'); const q=se?se.value.toLowerCase().trim():'';
+  const groups=[["Pending / waiting",it=>it.status!=='Accepted'&&it.status!=='Denied'],["Accepted",it=>it.status==='Accepted'],["Denied",it=>it.status==='Denied']];
+  let html='';
+  groups.forEach(([label,pred])=>{ let list=items.filter(pred); if(q)list=list.filter(it=>(it.name+' '+it.org).toLowerCase().includes(q)); if(!list.length)return; html+=`<div class="catgap">${label}<span class="c">${pad(list.length)}</span></div>`+list.map(histCard).join(''); });
+  document.getElementById('hist-list').innerHTML = html || '<div class="empty">Nothing here yet.<small>Your past applications load automatically; new ones appear when you submit from Write.</small></div>';
+}
+
+function renderAll(){ renderDiscover(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); }
+
+/* ---------- calendar + upcoming ---------- */
+let calRef, userNav=false;
+function chosenOpps(){ return OPPS.filter(d=>{const t=sv(d.id).triage; return t==='yes'||t==='maybe';}); }
+function anchorCal(){ if(userNav && calRef) return; const t=new Date();t.setHours(0,0,0,0); const f=chosenOpps().filter(d=>d.date).map(d=>new Date(d.date+"T00:00:00")).filter(x=>x>=t).sort((a,b)=>a-b); const base=f.length?f[0]:t; calRef=new Date(base.getFullYear(),base.getMonth(),1); }
+function calInit(){ anchorCal(); calRender(); }
+function calMove(n){ userNav=true; calRef=new Date(calRef.getFullYear(),calRef.getMonth()+n,1); calRender(); }
+function calRender(){
+  const y=calRef.getFullYear(),m=calRef.getMonth();
+  document.getElementById('calTitle').textContent=MON[m]+" "+y;
+  const map={}; chosenOpps().filter(d=>d.date).forEach(d=>{const dt=new Date(d.date+"T00:00:00");const k=dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDate();(map[k]=map[k]||[]).push(d);});
+  const t=new Date();t.setHours(0,0,0,0);
+  const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), prev=new Date(y,m,0).getDate();
+  let h=["S","M","T","W","T","F","S"].map(w=>`<div class="wd">${w}</div>`).join('');
+  for(let i=0;i<first;i++)h+=`<div class="c mut">${prev-first+i+1}</div>`;
+  for(let d=1;d<=days;d++){ const k=y+"-"+m+"-"+d,has=map[k],today=(t.getFullYear()===y&&t.getMonth()===m&&t.getDate()===d),est=has&&has.every(x=>x.est);
+    let chip=''; if(has){ chip=`<span class="cev ${est?'est':''}" title="${esc(has.map(x=>x.name).join(', '))}">${esc(has[0].name)}</span>`+(has.length>1?`<span class="cev more">+${has.length-1} more</span>`:''); }
+    h+=`<div class="c ${today?'today':''} ${has?'has':''}">${d}${chip}</div>`; }
+  document.getElementById('cal').innerHTML=h;
+  const keys=Object.keys(map).filter(k=>{const p=k.split('-'); return (+p[0])===y && (+p[1])===m;}).sort((a,b)=>(+a.split('-')[2])-(+b.split('-')[2]));
+  let ml=''; keys.forEach(k=>{const dd=k.split('-')[2]; map[k].forEach(x=>{ ml+=`<div class="cle"><span class="cled">${dd} ${MON[m].slice(0,3)}</span><span class="clen">${x.name}${x.est?' <em>(est.)</em>':''}<span class="clorg">${x.org}</span></span></div>`; }); });
+  document.getElementById('calPick').innerHTML = ml || '<div class="calempty">No deadlines this month among your Yes/Maybe picks.</div>';
+}
+function upcoming(){
+  const ch=chosenOpps();
+  const dated=ch.filter(d=>d.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
+  const roll=ch.filter(d=>!d.date&&/rolling/i.test(d.deadline));
+  let h=''; dated.forEach(d=>{h+=`<div class="upi"><span class="dot ${d.est?'est':''}"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">${fmt(d.date)}${d.est?' · est.':''}</div></div></div>`;});
+  roll.forEach(d=>{h+=`<div class="upi"><span class="dot roll"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">Rolling — open now</div></div></div>`;});
+  document.getElementById('up').innerHTML=h||'<div style="color:var(--faint);font-size:12px;line-height:1.5">Say “Yes” or “Maybe” on Discover and their deadlines show up here.</div>';
+}
+
+/* ---------- résumé workbench ---------- */
+const MASTER_RESUME = loadPriv('resume', '');
+const RKEY="nadyne.resume.v1";
+let RES={versions:[{name:"Master",text:""}],active:0};
+try{ const r=localStorage.getItem(RKEY); if(r){ const p=JSON.parse(r); if(p&&p.versions&&p.versions.length){ RES=p; if(RES.active>=RES.versions.length)RES.active=0; } } }catch(e){}
+function rpersist(){ if(!STORE_OK)return; try{ localStorage.setItem(RKEY, JSON.stringify(RES)); }catch(e){} }
+function seedMaster(){ const m=RES.versions.find(v=>v.name==='Master'); if(m && !(m.text||'').trim()){ m.text=MASTER_RESUME; rpersist(); } }
+seedMaster();
+function openResume(){ document.getElementById('rov').classList.add('show'); renderResume(); }
+function closeResume(){ document.getElementById('rov').classList.remove('show'); }
+function selectVersion(i){ RES.active=+i; rpersist(); renderResume(); }
+function addVersion(){ RES.versions.push({name:'New version',text:''}); RES.active=RES.versions.length-1; rpersist(); renderResume(); const n=document.getElementById('rname'); if(n)n.focus(); }
+function delVersion(){ if(RES.versions.length<=1){RES.versions=[{name:'Master',text:''}];RES.active=0;}else{RES.versions.splice(RES.active,1);RES.active=0;} rpersist(); renderResume(); }
+function renameVersion(v){ RES.versions[RES.active].name=(v&&v.trim())||('Version '+(RES.active+1)); rpersist(); const sel=document.getElementById('rverSel'); if(sel&&sel.options[RES.active])sel.options[RES.active].text=RES.versions[RES.active].name; }
+function setResumeText(v){ RES.versions[RES.active].text=v; rpersist(); renderAudit(); }
+function renderResume(){ const sel=document.getElementById('rverSel'); sel.innerHTML=RES.versions.map((v,i)=>`<option value="${i}" ${i===RES.active?'selected':''}>${esc(v.name)}</option>`).join(''); document.getElementById('rname').value=RES.versions[RES.active].name; document.getElementById('rtext').value=RES.versions[RES.active].text; renderAudit(); }
+function useTailored(id){ const d=byId(id); if(!d||!d.tailored)return; const nm='For '+d.name.slice(0,22); let idx=RES.versions.findIndex(v=>v.name===nm); if(idx<0){RES.versions.push({name:nm,text:d.tailored});idx=RES.versions.length-1;}else{RES.versions[idx].text=d.tailored;} RES.active=idx; rpersist(); openResume(); }
+function tailorHandoff(id){ const d=byId(id); const mv=RES.versions.find(v=>v.name==='Master'); const master=(mv&&mv.text)||MASTER_RESUME; const p="Tailor my résumé into a sharp one-page version for this specific opportunity. Lead with my most relevant experience, rewrite the profile line, foreground the right keywords, cut what's irrelevant — keep everything truthful.\n\nOPPORTUNITY: "+d.name+" — "+d.org+"\nWHAT IT IS: "+d.why+"\n\nMY MASTER RÉSUMÉ:\n"+master; copyText(p,"Résumé + opportunity copied — paste into Claude to tailor"); }
+function resumeFeedback(){ const t=(RES.versions[RES.active].text||'').trim(); if(!t){toast('Add résumé text first');return;} const p="Please audit this résumé for prestigious youth advisory / fellowship applications (human rights, online safety, gender, AI policy, diplomacy). Give prioritized, specific fixes — impact & quantification, verb strength, clarity, what to cut — then rewrite the 3 weakest bullets.\n\nRÉSUMÉ:\n"+t; copyText(p,"Résumé + prompt copied — paste into Claude"); }
+function renderAudit(){ const res=scoreResume(RES.versions[RES.active].text); const g=document.getElementById('rgauge'), el=document.getElementById('raudit'); if(res.empty){g.textContent='—';g.className='rgauge';el.innerHTML='<div class="rempty">Paste your résumé text to get an instant score and specific fixes.</div>';return;} g.textContent=res.score; g.className='rgauge '+(res.score>=80?'good':res.score>=60?'ok':'low'); el.innerHTML=res.cats.map(c=>`<div class="rcat"><div class="rcatline"><span class="rcatn">${c.label}</span><span class="rcats tnum">${c.score}</span></div><div class="rbar"><div class="rbarf" style="width:${c.score}%;background:${c.score>=80?'var(--open)':c.score>=60?'var(--watch)':'#B0563B'}"></div></div><ul class="rfind">${c.f.map(x=>`<li>${esc(x)}</li>`).join('')}</ul></div>`).join(''); }
+function scoreResume(text){
+  const t=(text||'').trim(); if(!t) return {score:0,empty:true,cats:[]};
+  const words=t.split(/\s+/).filter(Boolean), wc=words.length;
+  const lines=t.split(/\n/).map(l=>l.trim()).filter(Boolean);
+  const bullets=lines.filter(l=>/^[-•*]/.test(l)||l.length>40); const nb=Math.max(bullets.length,1);
+  let lenScore=100, lf=[];
+  if(wc<250){lenScore=55;lf.push('Short — '+wc+' words. Strong one-pagers usually run ~400–700.');}
+  else if(wc>950){lenScore=65;lf.push('Long — '+wc+' words. Trim toward one page (~700).');}
+  else lf.push(wc+' words — good length.');
+  const numMatches=(t.match(/\b\d[\d,\.]*\+?%?\b/g)||[]).length+(t.match(/\b\d+x\b/gi)||[]).length;
+  let metricScore=Math.min(100,Math.round((numMatches/nb)*160)), mf=[];
+  if(numMatches<3){metricScore=Math.min(metricScore,45);mf.push('Only '+numMatches+' quantified figures. Add numbers, %, or scale (e.g. "32.5M youth", "310% growth").');}else mf.push(numMatches+' quantified figures — strong.');
+  const weak=[/^responsible for/i,/^worked on/i,/^helped/i,/^assisted/i,/^duties/i,/^tasked with/i,/^involved in/i,/^participated/i,/^in charge of/i];
+  let weakHits=[]; bullets.forEach(l=>{const s=l.replace(/^[-•*]\s*/,'');if(weak.some(r=>r.test(s)))weakHits.push(s.slice(0,46));});
+  let verbScore=weakHits.length?Math.max(50,100-weakHits.length*18):100, vf=[];
+  vf.push(weakHits.length?(weakHits.length+' weak opener(s), e.g. "'+weakHits[0]+'…". Start with strong verbs (Led, Built, Grew, Researched).'):'No weak "responsible for"-type openers — good.');
+  const fillers=['very','really','things','stuff','a lot','various','several','just','actually','basically','in order to'];
+  let fillCount=0,fh=[]; const low=' '+t.toLowerCase()+' ';
+  fillers.forEach(f=>{const c=(low.match(new RegExp('\\b'+f.replace(/ /g,'\\s+')+'\\b','g'))||[]).length;if(c){fillCount+=c;fh.push(f+' ('+c+')');}});
+  let fillScore=Math.max(50,100-fillCount*8),ff=[]; ff.push(fh.length?('Filler: '+fh.slice(0,5).join(', ')+' — cut for tighter writing.'):'No filler words flagged.');
+  const stop=new Set(['this','that','with','from','your','their','have','into','been','were','and','the','for']);
+  const freq={}; words.forEach(w=>{const k=w.toLowerCase().replace(/[^a-z]/g,'');if(k.length>3&&!stop.has(k))freq[k]=(freq[k]||0)+1;});
+  const over=Object.entries(freq).filter(e=>e[1]>=4).sort((a,b)=>b[1]-a[1]).slice(0,4);
+  let repScore=over.length?Math.max(55,100-over.length*10):100,rf=[]; rf.push(over.length?('Repeated: '+over.map(e=>e[0]+' ×'+e[1]).join(', ')+' — vary your wording.'):'Little repetition — good variety.');
+  const need=['education','experience','skill']; const low2=t.toLowerCase(); const missing=need.filter(s=>!low2.includes(s));
+  let secScore=Math.round((need.length-missing.length)/need.length*100),sf=[]; sf.push(missing.length?('Add/label sections: '+missing.join(', ')+'.'):'Core sections present (education, experience, skills).');
+  const cats=[{label:'Length',score:lenScore,f:lf},{label:'Quantified impact',score:metricScore,f:mf},{label:'Strong verbs',score:verbScore,f:vf},{label:'Concision',score:fillScore,f:ff},{label:'Variety',score:repScore,f:rf},{label:'Sections',score:secScore,f:sf}];
+  const w={Length:.12,'Quantified impact':.28,'Strong verbs':.22,'Concision':.12,'Variety':.1,'Sections':.16};
+  const score=Math.round(cats.reduce((a,c)=>a+c.score*(w[c.label]||0),0));
+  return {score,empty:false,cats,wc};
+}
+document.getElementById('rov').addEventListener('click',e=>{ if(e.target.id==='rov') closeResume(); });
+
+/* ---------- listeners + init ---------- */
+document.getElementById('disc-search').addEventListener('input',e=>{discQ=e.target.value.toLowerCase().trim();renderDiscover();});
+document.querySelectorAll('#disc-tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#disc-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');discFilter=b.dataset.f;renderDiscover();}));
+
+/* ---------- private backup: export / import ---------- */
+function download(name,text){ const a=document.createElement('a'); const url=URL.createObjectURL(new Blob([text],{type:'application/json'})); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+function exportData(){ const data={ _type:'nadyne-tracker-backup', savedAt:new Date().toISOString().slice(0,10), past:loadPriv('past',[]), resume:loadPriv('resume',''), opps:JSON.parse(localStorage.getItem(SKEY)||'{}'), hist:JSON.parse(localStorage.getItem(HKEY)||'{}'), resumeVersions:JSON.parse(localStorage.getItem(RKEY)||'null') }; download('nadyne-tracker-backup.json', JSON.stringify(data,null,2)); toast('Backup downloaded'); }
+function importData(file){ const r=new FileReader(); r.onload=()=>{ try{ const o=JSON.parse(r.result); if('past' in o) savePriv('past',o.past||[]); if('resume' in o) savePriv('resume',o.resume||''); if(o.opps) localStorage.setItem(SKEY,JSON.stringify(o.opps)); if(o.hist) localStorage.setItem(HKEY,JSON.stringify(o.hist)); if(o.resumeVersions) localStorage.setItem(RKEY,JSON.stringify(o.resumeVersions)); toast('Imported — reloading'); setTimeout(()=>location.reload(),500); }catch(e){ toast('Could not read that file'); } }; r.readAsText(file); }
+function updatePrivBanner(){ const b=document.getElementById('privbanner'); if(!b)return; const has=(PAST&&PAST.length)||((MASTER_RESUME||'').trim().length); b.style.display=has?'none':'block'; }
+
+calInit(); renderAll(); updatePrivBanner();
+</script>
+</body>
+</html>
