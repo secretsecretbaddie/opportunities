@@ -352,232 +352,546 @@
 function loadPriv(k,f){ try{ const v=localStorage.getItem('nadyne.priv.'+k); return v!=null?JSON.parse(v):f; }catch(e){ return f; } }
 function savePriv(k,v){ try{ localStorage.setItem('nadyne.priv.'+k, JSON.stringify(v)); }catch(e){} }
 const DATA = [
-  { id:"ohchr-network", elig:"✅ Open to all nationalities · rolling", name:"Global Youth Network for Human Rights", org:"UN Human Rights Office (OHCHR)",
-    status:"OPEN", deadline:"Rolling — apply anytime", date:null, est:false, source:"OHCHR",
-    link:"https://www.ohchr.org", prestige:5, difficulty:2, match:5, live:true,
-    why:"Worldwide UN youth human-rights community feeding into consultations & campaigns. Core human-rights fit, low barrier.",
-    tailored:`NADYNE APUNG — Los Angeles, CA · LinkedIn
-
-PROFILE
-Indonesian youth advocate working where human rights meet technology — online-safety policy, digital-age child protection, and technology-facilitated gender violence — bringing an evidence-based, Global-South perspective to OHCHR's youth human-rights work.
-
-HUMAN-RIGHTS & ADVOCACY
-TikTok — Youth Council Member, Indonesia & US (Nov 2024 – Present)
-- 1 of 28 international members (4 Indonesian reps) shaping online-safety protections for 32.5M youth; London Youth Summit delegate with Trust & Safety and Policy teams.
-Planned Parenthood — Digital Youth Advisory Board (Mar 2026 – Present)
-- Advance sexual & reproductive health with a focus on technology-facilitated sexual violence; make outreach more inclusive by surfacing barriers to care.
-US Embassy to Indonesia — Ambassador's Youth Diplomacy Academy (Jan – Aug 2025)
-- Trained with Ambassador Kamala Lakhdir and senior diplomats; site visits to the ASEAN Secretariat and Indonesian MFA; capstone bridging Indonesian and US communities.
-Singapore Ministry of Home Affairs — Criminal Psychology Research Assistant (May – Jul 2026)
-- Researched scam vulnerability and the danger of false positives in online child-exploitation cases; presented to the Singapore Police Force.
-
-RESEARCH & DATA
-Coffee Meets Bagel — PM Intern (2026): multilingual LLM evaluation (EN/ID), SQL, dashboards across 10 markets.
-Decision Neuroscience Lab, CMC — Research Assistant (2025–26): managed experimental data from 100+ participants.
-
-EDUCATION
-Pomona College — BA, Psychological Science & Religious Studies (2024–2029).
-
-LANGUAGES: English & Indonesian (native), Malay, French.`,
-    qa:[
-      {q:"Why do you want to join the Global Youth Network for Human Rights?",
-       a:"I work where human rights meet technology and young people. On TikTok's Youth Council I helped shape online-safety protections for 32.5 million youth, and through criminal-psychology research with Singapore's Ministry of Home Affairs I studied how scams and online child-exploitation cases harm people — and how false positives harm them too. I want to bring that evidence-based, ground-level view into OHCHR's consultations and carry it back to youth in Indonesia and the US."},
-      {q:"Describe your experience advancing human rights at a local or national level.",
-       a:"Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs; on Planned Parenthood's Digital Youth Advisory Board I focus on technology-facilitated sexual violence and more inclusive access to care. Across these I turn community needs into concrete recommendations."},
-      {q:"Which human-rights issue matters most to you and why?",
-       a:"Digital rights and child protection online — building protections that are both effective and rights-respecting, designed with young people rather than only for them."}
-    ] },
-  { id:"unmgcy", elig:"✅ Global · under 30", name:"UN Major Group for Children and Youth (UN MGCY)", org:"United Nations",
-    status:"OPEN", deadline:"Rolling — apply anytime", date:null, est:false, source:"@majorgroupcy",
-    link:"https://www.unmgcy.org/get-involved", prestige:4, difficulty:2, match:4, live:true,
-    why:"The UN's official mechanism for youth to feed into policy (SDGs; child & youth online safety). Free, under-30, no prior engagement. Note: your tracker shows a past application to a UN Major Group role (denied) — confirm this is a fresh opening before reapplying.",
-    qa:[
-      {q:"Why do you want to join UN MGCY?",
-       a:"I want a formal channel to move youth online-safety and child-protection work into UN policy. I've done this in practice — TikTok's Youth Council, research on online child-exploitation, a Planned Parenthood board on tech-facilitated violence — and MGCY is where that becomes structured input to the UN. As an Indonesian in the US, I can help surface underrepresented Southeast Asian perspectives."},
-      {q:"Which thematic cluster interests you?",
-       a:"The digital/technology and health & well-being clusters — online safety, AI governance for young people, and adolescent mental health, which ties to my psychology studies."},
-      {q:"What skills would you contribute?",
-       a:"Data & research (LLM evaluation, SQL, dashboards; three research labs), multilingual advocacy (English & Indonesian native, plus Malay and French), and youth-council experience turning complex issues into clear positions."}
-    ] },
-  { id:"itu-yab", elig:"✅ Open to all nationalities", name:"Secretary-General's Youth Advisory Board", org:"ITU (UN agency for digital technology)",
-    status:"WATCH", deadline:"Between rounds — next call est. Dec 2027", date:"2027-12-01", est:true, source:"ITU",
-    link:"https://www.itu.int/en/action/youth/Pages/itu-secretary-generals-youth-advisory-board.aspx",
-    prestige:5, difficulty:5, match:5, live:false,
-    why:"~12-seat appointed board advising the SG on connectivity, AI, and the digital divide. Open to all nationalities. Marquee fit for your online-safety niche.",
-    qa:[
-      {q:"Why do you want to serve on the Youth Advisory Board? (illustrative)",
-       a:"Connectivity is now a children's-rights issue, and I've worked at exactly that intersection: online-safety policy for 32.5M youth on TikTok's Youth Council, research on online child-exploitation and scam vulnerability, and product/data work evaluating multilingual LLMs. I'd bring a Global-South, youth-safety lens to advice on bridging the digital divide."},
-      {q:"What youth digital issue would you champion? (illustrative)",
-       a:"Safe-by-design standards for minors that work in low-resource, multilingual contexts — youth-tested features and evaluation methods that reduce both under- and over-enforcement, drawing on my research on false positives in child-protection systems."}
-    ] },
-  { id:"amnesty-yoco", elig:"✅ US-based youth — you qualify (LA)", name:"Youth Collective", org:"Amnesty International USA",
-    status:"WATCH", deadline:"Annual — reopens est. Nov 2026", date:"2026-11-15", est:true, source:"@aiusayouth",
-    link:"https://www.amnestyusa.org/get-involved/grassroots-activism/youth/yoco/",
-    prestige:5, difficulty:4, match:5, live:false,
-    why:"Named US youth human-rights advocacy body — prestigious, US-based, defined seat. Your flagged favorite.",
-    qa:[
-      {q:"Why do you want to be part of the Youth Collective? (illustrative)",
-       a:"I want to organize, not just advise. I've built youth-safety protections on a global platform, researched how digital harms and blunt enforcement fall hardest on the vulnerable, and advocated on tech-facilitated sexual violence with Planned Parenthood. The Youth Collective is where I'd channel that into US human-rights campaigning."},
-      {q:"What human-rights issue are you most passionate about? (illustrative)",
-       a:"Digital-age rights: privacy, protection from online exploitation, and free expression for young people — designed with the communities they affect."},
-      {q:"Describe your leadership experience. (illustrative)",
-       a:"1 of 28 international members (and 4 Indonesian reps) on TikTok's Youth Council; London Youth Summit delegate; US Embassy diplomacy training with the ASEAN Secretariat; plus financial-literacy programs for 1,000+ micro-entrepreneurs in Indonesia."}
-    ] },
-  { id:"oecd-youthwise", elig:"❓ Verify OECD-country eligibility", name:"Youthwise (Youth Advisory Board)", org:"OECD",
-    status:"WATCH", deadline:"Annual — opens ~Apr, deadline est. 15 May 2027", date:"2027-05-15", est:true, source:"OECD",
-    link:"https://www.oecd.org/en/about/programmes/youthwise.html",
-    prestige:5, difficulty:5, match:3, live:false,
-    why:"OECD's named youth advisory board; 18–30; ~1-year term shaping OECD policy. Confirm 'OECD country' eligibility (residence vs citizenship).",
-    qa:[
-      {q:"How would you represent youth voice in OECD policy? (illustrative)",
-       a:"By grounding it in data and lived experience. I evaluate multilingual AI systems and build analytics dashboards, and I advise youth bodies on digital safety and health — so I can translate between young people's realities and the evidence policymakers need, especially on the digital economy and youth well-being."},
-      {q:"Which policy area would you focus on? (illustrative)",
-       a:"The digital transition and youth mental health — how AI and platforms reshape work, safety, and well-being for young people, and what guardrails actually help."}
-    ] },
-  { id:"ohchr-youth4rights", elig:"❓ Typically asks ~2 yrs HR experience", name:"Youth4Rights Advisory Group (flagship 12-seat board)", org:"UN Human Rights Office (OHCHR)",
-    status:"WATCH", deadline:"Annual — reopens est. mid-2027", date:"2027-06-15", est:true, source:"OHCHR",
-    link:"https://www.ohchr.org", prestige:5, difficulty:5, match:5, live:false,
-    why:"The flagship 12-seat UN human-rights youth board — highest prestige & selectivity. Note: typically asks ~2 years of human-rights experience.",
-    qa:[
-      {q:"Describe your human-rights experience (2+ years). (illustrative)",
-       a:"Since 2024: TikTok Youth Council (online-safety protections), Planned Parenthood Digital Youth Advisory Board (tech-facilitated sexual violence), US Embassy Youth Diplomacy Academy (ASEAN Secretariat), and criminal-psychology research on online child-exploitation — a consistent through-line of digital-age rights work at national and global levels."},
-      {q:"What would you contribute to the Advisory Group? (illustrative)",
-       a:"A rigorous, Global-South, tech-literate perspective: research skills, multilingual reach (EN/ID native), and experience turning youth input into concrete safeguards."}
-    ] },
-  { id:"lancet-yap", elig:"✅ Global", name:"Youth Advisory Panel — Child & Adolescent Health", org:"The Lancet",
-    status:"INVESTIGATE", deadline:"Window unconfirmed — investigating", date:null, est:false, source:"The Lancet",
-    link:"https://engage.youth.gov/opportunities/youth-advisory-panel-lancet-child-adolescent-health",
-    prestige:5, difficulty:4, match:4, live:false,
-    why:"Named youth advisory/review roles at a top medical journal on adolescent & youth mental health — ties to your psychology thread.",
-    qa:[
-      {q:"Why do you want to advise on adolescent health? (illustrative)",
-       a:"I study Psychological Science and have worked in a decision-neuroscience lab and on youth mental-health-adjacent advocacy. I'd bring research literacy and youth lived experience to how adolescent health evidence is framed and communicated."}
-    ] },
-  { id:"iyd-y20", elig:"✅ Indonesian nationals — you qualify", name:"Y20 Delegate (Youth 20)", org:"Indonesia Youth Diplomacy",
-    status:"WATCH", deadline:"Annual — tracks the G20/Y20 cycle; watch for delegate call", date:null, est:false, source:"@id.youthdiplomacy",
-    link:"https://www.indonesianyouthdiplomacy.org/", prestige:4, difficulty:5, match:5, live:false,
-    why:"Represent Indonesia as a Y20 (G20 youth) delegate — a named, competitive diplomatic seat. Direct fit with your US Embassy diplomacy academy & ASEAN work.",
-    qa:[
-      {q:"Why do you want to represent Indonesia as a Y20 delegate? (illustrative)",
-       a:"Indonesia's voice in global youth policy should come from people who've done real cross-border work. Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs, and I've represented Indonesian youth on TikTok's global Youth Council. I'd bring that bridge — Indonesia, ASEAN, and the US — to the Y20 table."},
-      {q:"What policy priority would you bring? (illustrative)",
-       a:"Digital safety and AI governance for young people — an area where Indonesia can lead the Global South. I'd push for youth-tested, multilingual safety standards, drawing on my online-safety and anti-scam research."}
-    ] },
-  { id:"ccswg-yac", elig:"✅ California residents 14–20 — you qualify", name:"CCSWG Youth Advisory Council (California)", org:"California Commission on the Status of Women & Girls",
-    status:"WATCH", deadline:"Annual — 2026–27 closed 15 Jul; reopens ~15 May 2027", date:"2027-05-15", est:true, source:"@ccswg",
-    link:"https://women.ca.gov/ccswg-youth-advisory-council", prestige:3, difficulty:3, match:4, live:false,
-    why:"Defined state-level youth advisory seat on women & girls' policy — local to you in California, gender + teen-mental-health focus. Ages 14–20.",
-    qa:[
-      {q:"Why do you want to join the Youth Advisory Council? (illustrative)",
-       a:"I've advocated on tech-facilitated sexual violence with Planned Parenthood and studied online harms to young people. As a student in California, I want to turn that into state-level policy that protects and empowers young women and girls here."},
-      {q:"What issue affecting young Californians matters most? (illustrative)",
-       a:"Teen mental health and online safety — how digital platforms shape young women's wellbeing, and which protections actually work."}
-    ] },
-  { id:"un-youth-delegate", elig:"✅ Indonesian nationals — you qualify", name:"UN Youth Delegate (Indonesia)", org:"UN Youth Office · national selection",
-    status:"WATCH", deadline:"Country-run selection — watch Indonesian national call", date:null, est:false, source:"@unyouthaffairs",
-    link:"https://social.desa.un.org/issues/youth/un-youth-delegate-programme", prestige:5, difficulty:5, match:5, live:false,
-    why:"Represent your country at the UN General Assembly — the flagship youth-representative seat. Selection runs through national channels (Indonesia).",
-    qa:[
-      {q:"Why do you want to be a UN Youth Delegate? (illustrative)",
-       a:"To carry real youth priorities into the UN, not symbolic ones. I've done the groundwork — global youth-council advocacy, human-rights diplomacy training, research on digital harms — and I'd consult widely across Indonesian youth before speaking on their behalf."},
-      {q:"What would you consult young people on, and how? (illustrative)",
-       a:"I'd run structured consultations — surveys and listening sessions in Indonesian and English — on digital rights, online safety, and mental health, then bring those findings, backed by data, into UN forums."}
-    ] },
-  { id:"civicus-yat", elig:"✅ Global · youth", name:"Youth Action Team", org:"CIVICUS (global civil society alliance)",
-    status:"WATCH", deadline:"Annual — next call est. Jan 2027 (2025 ran in Jul)", date:"2027-01-15", est:true, source:"CIVICUS",
-    link:"https://opportunitydesk.org/tag/civicus-youth-action-team/", prestige:4, difficulty:4, match:4, live:false,
-    why:"Named youth body of a major global civil-society alliance — voting members shaping CIVICUS's youth agenda. Strong civic-space / human-rights fit. Recruits annually (watch for the next call).",
-    qa:[
-      {q:"Why do you want to join the CIVICUS Youth Action Team? (illustrative)",
-       a:"My advocacy has always been about widening who gets heard — youth online-safety policy on TikTok's Council, tech-facilitated-violence work with Planned Parenthood, and human-rights diplomacy through the US Embassy academy. CIVICUS is where that connects to the global fight for civic space, and I'd bring a Southeast Asian, digitally-fluent perspective to it."},
-      {q:"What civic-space issue would you prioritize? (illustrative)",
-       a:"Digital civic space — protecting young people's rights to organize and speak safely online, and pushing back on surveillance and over-enforcement, drawing on my research into online harms and false positives."}
-    ] },
-  { id:"igf-dc-children", elig:"✅ Open to all · rolling", name:"Dynamic Coalition on Children's Rights in the Digital Environment", org:"UN Internet Governance Forum (IGF)",
-    status:"OPEN", deadline:"Rolling — join anytime (open working group)", date:null, est:false, source:"UN IGF",
-    link:"https://www.intgovforum.org/en/content/dynamic-coalition-on-childrens-rights-in-the-digital-environment",
-    prestige:3, difficulty:2, match:5, live:true,
-    why:"Not a selective seat — it's an OPEN, UN-affiliated working group on children's rights & safety online (your exact niche). A way to plug into real UN internet-governance policy now, while the selective boards are between cycles. Join by emailing the focal point and subscribing to the list.",
-    tailored:`NADYNE APUNG — Los Angeles, CA · LinkedIn
-
-PROFILE
-Youth online-safety and child-protection advocate with hands-on policy, research, and data experience — protecting children's rights in digital environments across platforms, government research, and multilingual contexts.
-
-ONLINE SAFETY & CHILD PROTECTION
-TikTok — Youth Council Member, Indonesia & US (Nov 2024 – Present)
-- 1 of 28 international members (4 Indonesian reps) protecting online safety for 32.5M youth; London Youth Summit delegate with Trust & Safety and Policy teams.
-Singapore Ministry of Home Affairs — Criminal Psychology Research Assistant (May – Jul 2026)
-- Self-directed research on scam vulnerability and false positives in online child-exploitation cases; findings presented to the Singapore Police Force.
-Planned Parenthood — Digital Youth Advisory Board (Mar 2026 – Present)
-- Focus on technology-facilitated sexual violence and safer, more inclusive outreach for young people.
-
-DATA & RESEARCH
-Coffee Meets Bagel — PM Intern (2026): audited 4 multilingual LLMs (EN/ID), wrote SQL, built dashboards across 10 markets.
-Decision Neuroscience Lab, CMC (2025–26): managed experimental data from 100+ participants.
-
-EDUCATION
-Pomona College — BA, Psychological Science & Religious Studies (2024–2029).
-
-LANGUAGES: English & Indonesian (native), Malay, French.`,
-    qa:[
-      {q:"Intro email to join the coalition (draft you can send)",
-       a:"Dear Mr. Krause,\n\nI'm Nadyne Apung, an Indonesian undergraduate at Pomona College working on youth online safety and child protection — including TikTok's Youth Council (online-safety policy reaching 32.5M youth), criminal-psychology research on online child-exploitation cases with Singapore's Ministry of Home Affairs, and advocacy on tech-facilitated sexual violence with Planned Parenthood.\n\nI'd like to join the Dynamic Coalition on Children's Rights in the Digital Environment and contribute to its papers and policy work. Could you add me to the mailing list?\n\nThank you,\nNadyne Apung"},
-      {q:"What you'd contribute (illustrative)",
-       a:"A youth and Global-South perspective plus research skills: evidence on online child-exploitation harms and the risk of over-enforcement / false positives, and multilingual (English & Indonesian) reach into Southeast Asian contexts."}
-    ] },
-  { id:"apceiu-vaw", name:"From Awareness to Action: Ending Discrimination & Violence Against Women", org:"APCEIU (UNESCO) · GCED Online Campus",
-    status:"OPEN", deadline:"Open now — closes 9 Aug 2026 (KST)", date:"2026-08-09", est:false, source:"@gcedonline",
-    link:"https://www.gcedonline.org", prestige:3, difficulty:2, match:5, live:true, cat:"Miscellaneous",
-    elig:"✅ Women · global online course — you qualify",
-    why:"Instructor-led UNESCO/APCEIU certificate course, women-only, on feminist approaches to ending violence against women — your #1 theme (SRHR/GBV), open now with an advocacy-plan capstone. Apply via gcedonline.org (contact gcedonline@unescoapceiu.org).",
-    qa:[
-      {q:"Why do you want to join this course? (illustrative)",
-       a:"I work on technology-facilitated sexual violence with Planned Parenthood's Digital Youth Advisory Board and on online safety with TikTok's Youth Council, so ending violence against women is central to my work. I want the feminist grounding — root causes, the history of women's movements, and the UN mechanisms — to sharpen the advocacy I already do and turn it into a concrete plan."},
-      {q:"What advocacy plan would you build? (illustrative)",
-       a:"A campaign on online / technology-facilitated gender-based violence for young women in Southeast Asia — digital-safety literacy plus platform-accountability asks, drawing on my research into online harms and my bilingual (English/Indonesian) reach."}
-    ] },
-  { id:"la-youth-commission", name:"Youth Commissioner", org:"LA County Youth Commission",
-    status:"OPEN", deadline:"Open — no 2026 date posted (contact to confirm)", date:null, est:false, source:"@lacounty_youthcommission",
-    link:"https://forms.office.com/pages/responsepage.aspx?id=mKeuf9BqyU-waPy8rtNB9sSjgVG6ndJMp7i0MlnHAgdUNFU0S0tBQjExSjlJTkZSVzg5OUk4RTI5Ty4u&route=shorturl", prestige:3, difficulty:2, match:2, live:true, cat:"Organization",
-    elig:"⚠️ Core requirement: direct lived experience in foster care / juvenile justice — likely not a fit",
-    why:"A county seat shaping child-welfare and juvenile-justice policy — but per the official bulletin its primary requirement is direct lived experience in the foster-care / juvenile-justice / probation / kinship / adoption systems, so likely not a fit unless you have that background. Otherwise: 18+, and you live/study in LA County (Claremont counts). No 2026 deadline is publicly posted — contact (213) 633-5599 / YouthCommission@bos.lacounty.gov to confirm.",
-    qa:[
-      {q:"Why do you want to be a Youth Commissioner? (illustrative)",
-       a:"I study Psychological Science and work on child protection and youth rights — TikTok's Youth Council, criminal-psychology research on online child exploitation, and a Planned Parenthood advisory board. As a student in LA County, I want to turn that into local policy that improves child welfare and juvenile justice for young people here."},
-      {q:"What would you push for? (illustrative)",
-       a:"Youth-designed, trauma-informed protections in the child-welfare and juvenile-justice systems — and better digital-safety support for young people who are over-policed or exploited online, informed by my research on online harm and false positives."}
-    ] },
-  { id:"unwomen-yfais-2026", name:"Young Feminist AI School 2026", org:"UN Women",
-    status:"OPEN", deadline:"Closes 28 Jul 2026 — very soon", date:"2026-07-28", est:false, source:"UN Women · Opportunity Desk",
-    link:"https://docs.google.com/forms/d/e/1FAIpQLSc6z3TL7To3M9HujLObCc1VUfMNVjGeLUeuSeAMpZ1_KR4G7g/viewform", prestige:5, difficulty:3, match:5, live:true, cat:"Organization",
-    elig:"✅ Women 18–30, any country, free — you qualify. Note: you applied to the 2025 edition (denied); this is the new 2026 cohort.",
-    why:"Bullseye — gender + AI. A free 12-week UN Women online course (Aug–Oct 2026, ~4 hrs/week) on using AI responsibly for feminist advocacy, with a capstone campaign or policy tool. Closes 28 Jul, so decide fast.",
-    qa:[
-      {q:"Why do you want to join the Young Feminist AI School? (illustrative)",
-       a:"I work where gender meets technology — tech-facilitated sexual violence with Planned Parenthood's Digital Youth Advisory Board, online safety with TikTok's Youth Council — and I evaluate multilingual AI systems in my product work. This is where I'd sharpen using AI responsibly for feminist advocacy and build a concrete campaign."},
-      {q:"What would your final project be? (illustrative)",
-       a:"An AI-assisted toolkit against online / technology-facilitated gender-based violence for young women in Southeast Asia — multilingual (English/Indonesian) safety guidance plus a policy ask, grounded in my research on online harms."}
-    ] },
-  { id:"g4b-2026", name:"Girls for the Boardroom (G4B) Fellowship 2026", org:"Girls for the Boardroom",
-    status:"OPEN", deadline:"Closes 7 Aug 2026", date:"2026-08-07", est:false, source:"Global South Opportunities",
-    link:"https://docs.google.com/forms/d/e/1FAIpQLSfklanti4LWdJqAAePeynSde8Ds-6U-em0Ehwl_E6yJT7W2HA/viewform", prestige:2, difficulty:2, match:3, live:true, cat:"Organization",
-    elig:"✅ Girls / young women 13–25, global — you qualify",
-    why:"Women/girls-focused: a 10-week global leadership & mentorship programme (no prior leadership needed). Leans leadership/empowerment rather than rights advocacy, so a lighter fit than your core — but it's on your gender-equality theme and open to you.",
-    qa:[
-      {q:"Why do you want to join G4B? (illustrative)",
-       a:"I advocate for women and girls — from SRHR and tech-facilitated-violence work to representing Indonesian youth on global councils — and I want mentorship to grow into the leadership rooms where those decisions get made, bringing a Global-South perspective."}
-    ] },
-  { id:"essential-access-cac", name:"Community Advisory Council (CAC)", org:"Essential Access Health",
-    status:"OPEN", deadline:"Open interest list — no deadline (they contact you when the application opens)", date:null, est:false, source:"Essential Access Health",
-    link:"https://forms.office.com/pages/responsepage.aspx?id=HJnwRlIlnEicXgzfI6jvs-w10WMMWGlPn1Vajm_m7u1UQkhaTlRXMVdGNkZFV1hCN1k1QlZFUFlIUi4u&route=shorturl", prestige:3, difficulty:2, match:5, live:true, cat:"Organization",
-    elig:"✅ SRHR lived experience · based in California — you qualify",
-    why:"Bullseye for your SRHR lane — a 2-year, paid ($175/session) advisory seat shaping sexual & reproductive health programs, communications, research and advocacy in California, with quarterly virtual (Zoom) meetings. Seeks lived experience accessing SRH services and perspectives from historically marginalized communities (advocate / promotor / peer-educator experience a plus, not required). Submit the short interest form now — it is not the full application; they contact interested people when it opens. Recruiting ~10–15 California members. Questions: CAC@essentialaccess.org.",
-    qa:[
-      {q:"Why do you want to join the Community Advisory Council?",
-       a:"Sexual and reproductive health is central to my work — I serve on Planned Parenthood's Digital Youth Advisory Board, focused on technology-facilitated sexual violence and more inclusive access to care. As a young immigrant woman navigating the reproductive-health system in California, I want to help Essential Access Health identify barriers to care and design programs that actually reach historically underserved communities."},
-      {q:"What perspective would you bring? (illustrative)",
-       a:"A young, immigrant, Global-South lens on reproductive-health access, plus advocacy and research experience — turning lived experience and community input into concrete recommendations on programs, communications, and equity."}
-    ] }
+  {
+    "id": "unwomen-yfais-2026",
+    "name": "Young Feminist AI School 2026",
+    "org": "UN Women",
+    "status": "OPEN",
+    "deadline": "Closes 28 Jul 2026 — very soon",
+    "date": "2026-07-28",
+    "est": false,
+    "source": "UN Women · Opportunity Desk",
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSc6z3TL7To3M9HujLObCc1VUfMNVjGeLUeuSeAMpZ1_KR4G7g/viewform",
+    "prestige": 5,
+    "difficulty": 3,
+    "match": 5,
+    "live": true,
+    "cat": "Organization",
+    "elig": "✅ Women 18–30, any country, free — you qualify. Note: you applied to the 2025 edition (denied); this is the new 2026 cohort.",
+    "why": "Bullseye — gender + AI. A free 12-week UN Women online course (Aug–Oct 2026, ~4 hrs/week) on using AI responsibly for feminist advocacy, with a capstone campaign or policy tool. Closes 28 Jul, so decide fast.",
+    "qa": [
+      {
+        "q": "Why do you want to join the Young Feminist AI School? (illustrative)",
+        "a": "I work where gender meets technology — tech-facilitated sexual violence with Planned Parenthood's Digital Youth Advisory Board, online safety with TikTok's Youth Council — and I evaluate multilingual AI systems in my product work. This is where I'd sharpen using AI responsibly for feminist advocacy and build a concrete campaign."
+      },
+      {
+        "q": "What would your final project be? (illustrative)",
+        "a": "An AI-assisted toolkit against online / technology-facilitated gender-based violence for young women in Southeast Asia — multilingual (English/Indonesian) safety guidance plus a policy ask, grounded in my research on online harms."
+      }
+    ]
+  },
+  {
+    "id": "igf-dc-children",
+    "elig": "✅ Open to all · rolling",
+    "name": "Dynamic Coalition on Children's Rights in the Digital Environment",
+    "org": "UN Internet Governance Forum (IGF)",
+    "status": "OPEN",
+    "deadline": "Rolling — join anytime (open working group)",
+    "date": null,
+    "est": false,
+    "source": "UN IGF",
+    "link": "https://www.intgovforum.org/en/content/dynamic-coalition-on-childrens-rights-in-the-digital-environment",
+    "prestige": 3,
+    "difficulty": 2,
+    "match": 5,
+    "live": true,
+    "why": "Not a selective seat — it's an OPEN, UN-affiliated working group on children's rights & safety online (your exact niche). A way to plug into real UN internet-governance policy now, while the selective boards are between cycles. Join by emailing the focal point and subscribing to the list.",
+    "qa": [
+      {
+        "q": "Intro email to join the coalition (draft you can send)",
+        "a": "Dear Mr. Krause,\n\nI'm Nadyne Apung, an Indonesian undergraduate at Pomona College working on youth online safety and child protection — including TikTok's Youth Council (online-safety policy reaching 32.5M youth), criminal-psychology research on online child-exploitation cases with Singapore's Ministry of Home Affairs, and advocacy on tech-facilitated sexual violence with Planned Parenthood.\n\nI'd like to join the Dynamic Coalition on Children's Rights in the Digital Environment and contribute to its papers and policy work. Could you add me to the mailing list?\n\nThank you,\nNadyne Apung"
+      },
+      {
+        "q": "What you'd contribute (illustrative)",
+        "a": "A youth and Global-South perspective plus research skills: evidence on online child-exploitation harms and the risk of over-enforcement / false positives, and multilingual (English & Indonesian) reach into Southeast Asian contexts."
+      }
+    ]
+  },
+  {
+    "id": "essential-access-cac",
+    "name": "Community Advisory Council (CAC)",
+    "org": "Essential Access Health",
+    "status": "OPEN",
+    "deadline": "Open interest list — no deadline (they contact you when the application opens)",
+    "date": null,
+    "est": false,
+    "source": "Essential Access Health",
+    "link": "https://forms.office.com/pages/responsepage.aspx?id=HJnwRlIlnEicXgzfI6jvs-w10WMMWGlPn1Vajm_m7u1UQkhaTlRXMVdGNkZFV1hCN1k1QlZFUFlIUi4u&route=shorturl",
+    "prestige": 3,
+    "difficulty": 2,
+    "match": 5,
+    "live": true,
+    "cat": "Organization",
+    "elig": "✅ SRHR lived experience · based in California — you qualify",
+    "why": "Bullseye for your SRHR lane — a 2-year, paid ($175/session) advisory seat shaping sexual & reproductive health programs, communications, research and advocacy in California, with quarterly virtual (Zoom) meetings. Seeks lived experience accessing SRH services and perspectives from historically marginalized communities (advocate / promotor / peer-educator experience a plus, not required). Submit the short interest form now — it is not the full application; they contact interested people when it opens. Recruiting ~10–15 California members. Questions: CAC@essentialaccess.org.",
+    "qa": [
+      {
+        "q": "Why do you want to join the Community Advisory Council?",
+        "a": "Sexual and reproductive health is central to my work — I serve on Planned Parenthood's Digital Youth Advisory Board, focused on technology-facilitated sexual violence and more inclusive access to care. As a young immigrant woman navigating the reproductive-health system in California, I want to help Essential Access Health identify barriers to care and design programs that actually reach historically underserved communities."
+      },
+      {
+        "q": "What perspective would you bring? (illustrative)",
+        "a": "A young, immigrant, Global-South lens on reproductive-health access, plus advocacy and research experience — turning lived experience and community input into concrete recommendations on programs, communications, and equity."
+      }
+    ]
+  },
+  {
+    "id": "apceiu-vaw",
+    "name": "From Awareness to Action: Ending Discrimination & Violence Against Women",
+    "org": "APCEIU (UNESCO) · GCED Online Campus",
+    "status": "OPEN",
+    "deadline": "Open now — closes 9 Aug 2026 (KST)",
+    "date": "2026-08-09",
+    "est": false,
+    "source": "@gcedonline",
+    "link": "https://www.gcedonline.org",
+    "prestige": 3,
+    "difficulty": 2,
+    "match": 5,
+    "live": true,
+    "cat": "Miscellaneous",
+    "elig": "✅ Women · global online course — you qualify",
+    "why": "Instructor-led UNESCO/APCEIU certificate course, women-only, on feminist approaches to ending violence against women — your #1 theme (SRHR/GBV), open now with an advocacy-plan capstone. Apply via gcedonline.org (contact gcedonline@unescoapceiu.org).",
+    "qa": [
+      {
+        "q": "Why do you want to join this course? (illustrative)",
+        "a": "I work on technology-facilitated sexual violence with Planned Parenthood's Digital Youth Advisory Board and on online safety with TikTok's Youth Council, so ending violence against women is central to my work. I want the feminist grounding — root causes, the history of women's movements, and the UN mechanisms — to sharpen the advocacy I already do and turn it into a concrete plan."
+      },
+      {
+        "q": "What advocacy plan would you build? (illustrative)",
+        "a": "A campaign on online / technology-facilitated gender-based violence for young women in Southeast Asia — digital-safety literacy plus platform-accountability asks, drawing on my research into online harms and my bilingual (English/Indonesian) reach."
+      }
+    ]
+  },
+  {
+    "id": "g4b-2026",
+    "name": "Girls for the Boardroom (G4B) Fellowship 2026",
+    "org": "Girls for the Boardroom",
+    "status": "OPEN",
+    "deadline": "Closes 7 Aug 2026",
+    "date": "2026-08-07",
+    "est": false,
+    "source": "Global South Opportunities",
+    "link": "https://docs.google.com/forms/d/e/1FAIpQLSfklanti4LWdJqAAePeynSde8Ds-6U-em0Ehwl_E6yJT7W2HA/viewform",
+    "prestige": 2,
+    "difficulty": 2,
+    "match": 3,
+    "live": true,
+    "cat": "Organization",
+    "elig": "✅ Girls / young women 13–25, global — you qualify",
+    "why": "Women/girls-focused: a 10-week global leadership & mentorship programme (no prior leadership needed). Leans leadership/empowerment rather than rights advocacy, so a lighter fit than your core — but it's on your gender-equality theme and open to you.",
+    "qa": [
+      {
+        "q": "Why do you want to join G4B? (illustrative)",
+        "a": "I advocate for women and girls — from SRHR and tech-facilitated-violence work to representing Indonesian youth on global councils — and I want mentorship to grow into the leadership rooms where those decisions get made, bringing a Global-South perspective."
+      }
+    ]
+  },
+  {
+    "id": "wic-gylp-2026",
+    "name": "Global Youth Leadership Program (GYLP) 2026",
+    "org": "World Internet Conference (WIC)",
+    "status": "OPEN",
+    "deadline": "Closes 24 Jul 2026 (17:00 GMT+8) — closes tomorrow",
+    "date": "2026-07-24",
+    "est": false,
+    "source": "WIC · Global South Opportunities",
+    "link": "https://www.wicinternet.org/2026-03/20/c_1169845.htm",
+    "prestige": 3,
+    "difficulty": 4,
+    "match": 3,
+    "live": true,
+    "cat": "Digital rights / Internet governance",
+    "elig": "🌏 International applicants welcome (under 45); fully funded travel — verify visa/China travel & weigh the program's governance framing before committing",
+    "why": "Digital-governance angle: a fully funded youth track (Wuzhen Summit, ~Nov 2026) on internet governance and emerging-tech policy — adjacent to your online-safety/digital-rights lane. Note it is convened by China's state-affiliated World Internet Conference, so weigh that framing against your human-rights work.",
+    "qa": [
+      {
+        "q": "Why do you want to join the WIC Global Youth Leadership Program? (illustrative)",
+        "a": "I work on youth online safety and digital-rights policy — TikTok's Youth Council and research on online child-exploitation — and I want to understand how internet-governance debates play out across different governance models, including in Asia, and bring a youth safety-and-rights lens into those rooms."
+      }
+    ]
+  },
+  {
+    "id": "ohchr-network",
+    "elig": "✅ Open to all nationalities · rolling",
+    "name": "Global Youth Network for Human Rights",
+    "org": "UN Human Rights Office (OHCHR)",
+    "status": "OPEN",
+    "deadline": "Rolling — apply anytime",
+    "date": null,
+    "est": false,
+    "source": "OHCHR",
+    "link": "https://www.ohchr.org",
+    "prestige": 5,
+    "difficulty": 2,
+    "match": 5,
+    "live": true,
+    "why": "Worldwide UN youth human-rights community feeding into consultations & campaigns. Core human-rights fit, low barrier.",
+    "qa": [
+      {
+        "q": "Why do you want to join the Global Youth Network for Human Rights?",
+        "a": "I work where human rights meet technology and young people. On TikTok's Youth Council I helped shape online-safety protections for 32.5 million youth, and through criminal-psychology research with Singapore's Ministry of Home Affairs I studied how scams and online child-exploitation cases harm people — and how false positives harm them too. I want to bring that evidence-based, ground-level view into OHCHR's consultations and carry it back to youth in Indonesia and the US."
+      },
+      {
+        "q": "Describe your experience advancing human rights at a local or national level.",
+        "a": "Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs; on Planned Parenthood's Digital Youth Advisory Board I focus on technology-facilitated sexual violence and more inclusive access to care. Across these I turn community needs into concrete recommendations."
+      },
+      {
+        "q": "Which human-rights issue matters most to you and why?",
+        "a": "Digital rights and child protection online — building protections that are both effective and rights-respecting, designed with young people rather than only for them."
+      }
+    ]
+  },
+  {
+    "id": "unmgcy",
+    "elig": "✅ Global · under 30",
+    "name": "UN Major Group for Children and Youth (UN MGCY)",
+    "org": "United Nations",
+    "status": "OPEN",
+    "deadline": "Rolling — apply anytime",
+    "date": null,
+    "est": false,
+    "source": "@majorgroupcy",
+    "link": "https://www.unmgcy.org/get-involved",
+    "prestige": 4,
+    "difficulty": 2,
+    "match": 4,
+    "live": true,
+    "why": "The UN's official mechanism for youth to feed into policy (SDGs; child & youth online safety). Free, under-30, no prior engagement. Note: your tracker shows a past application to a UN Major Group role (denied) — confirm this is a fresh opening before reapplying.",
+    "qa": [
+      {
+        "q": "Why do you want to join UN MGCY?",
+        "a": "I want a formal channel to move youth online-safety and child-protection work into UN policy. I've done this in practice — TikTok's Youth Council, research on online child-exploitation, a Planned Parenthood board on tech-facilitated violence — and MGCY is where that becomes structured input to the UN. As an Indonesian in the US, I can help surface underrepresented Southeast Asian perspectives."
+      },
+      {
+        "q": "Which thematic cluster interests you?",
+        "a": "The digital/technology and health & well-being clusters — online safety, AI governance for young people, and adolescent mental health, which ties to my psychology studies."
+      },
+      {
+        "q": "What skills would you contribute?",
+        "a": "Data & research (LLM evaluation, SQL, dashboards; three research labs), multilingual advocacy (English & Indonesian native, plus Malay and French), and youth-council experience turning complex issues into clear positions."
+      }
+    ]
+  },
+  {
+    "id": "iycge-ambassador-2026",
+    "name": "Global Ambassador Programme 2026",
+    "org": "International Youth Council on Gender Equality (IYCGE)",
+    "status": "INVESTIGATE",
+    "deadline": "Open now — deadline not published (verify)",
+    "date": null,
+    "est": false,
+    "source": "IYCGE · Global South Opportunities",
+    "link": "https://www.iycge.org/ambassador-program",
+    "prestige": 2,
+    "difficulty": 3,
+    "match": 3,
+    "live": true,
+    "cat": "Gender equality",
+    "elig": "❓ Verify legitimacy & any participation fee first. Open internationally; asks for research/advocacy experience (postgraduate experience 'preferred' but not required — you can still apply)",
+    "why": "On your gender-equality theme — a youth ambassador role on gender-equality policy and advocacy, currently open to international applicants. Vet the organizer's legitimacy and check for any fee before applying, since it is a newer / less-established body.",
+    "qa": [
+      {
+        "q": "Why do you want to be a Global Ambassador for gender equality? (illustrative)",
+        "a": "Gender equality runs through my work — SRHR and tech-facilitated sexual violence with Planned Parenthood, plus research on online harms to women and girls. I'd bring an evidence-based, Global-South perspective to advocacy on gender-equality policy."
+      }
+    ]
+  },
+  {
+    "id": "la-youth-commission",
+    "name": "Youth Commissioner",
+    "org": "LA County Youth Commission",
+    "status": "OPEN",
+    "deadline": "Open — no 2026 date posted (contact to confirm)",
+    "date": null,
+    "est": false,
+    "source": "@lacounty_youthcommission",
+    "link": "https://forms.office.com/pages/responsepage.aspx?id=mKeuf9BqyU-waPy8rtNB9sSjgVG6ndJMp7i0MlnHAgdUNFU0S0tBQjExSjlJTkZSVzg5OUk4RTI5Ty4u&route=shorturl",
+    "prestige": 3,
+    "difficulty": 2,
+    "match": 2,
+    "live": true,
+    "cat": "Organization",
+    "elig": "⚠️ Core requirement: direct lived experience in foster care / juvenile justice — likely not a fit",
+    "why": "A county seat shaping child-welfare and juvenile-justice policy — but per the official bulletin its primary requirement is direct lived experience in the foster-care / juvenile-justice / probation / kinship / adoption systems, so likely not a fit unless you have that background. Otherwise: 18+, and you live/study in LA County (Claremont counts). No 2026 deadline is publicly posted — contact (213) 633-5599 / YouthCommission@bos.lacounty.gov to confirm.",
+    "qa": [
+      {
+        "q": "Why do you want to be a Youth Commissioner? (illustrative)",
+        "a": "I study Psychological Science and work on child protection and youth rights — TikTok's Youth Council, criminal-psychology research on online child exploitation, and a Planned Parenthood advisory board. As a student in LA County, I want to turn that into local policy that improves child welfare and juvenile justice for young people here."
+      },
+      {
+        "q": "What would you push for? (illustrative)",
+        "a": "Youth-designed, trauma-informed protections in the child-welfare and juvenile-justice systems — and better digital-safety support for young people who are over-policed or exploited online, informed by my research on online harm and false positives."
+      }
+    ]
+  },
+  {
+    "id": "women-deliver-ylp",
+    "name": "Young Leaders Program",
+    "org": "Women Deliver",
+    "status": "WATCH",
+    "deadline": "Between cohorts — runs on a multi-year cycle; watch for the next call",
+    "date": null,
+    "est": true,
+    "source": "Women Deliver",
+    "link": "https://womendeliver.org/youth/young-leaders-program/",
+    "prestige": 5,
+    "difficulty": 5,
+    "match": 5,
+    "live": false,
+    "cat": "Women's rights / SRHR",
+    "elig": "🌏 Global · young advocates; open to international/Indonesian applicants — verify the current age band when the call opens",
+    "why": "Flagship global SRHR & gender-equality youth advocacy program — highly prestigious and a bullseye for your women's-rights lane (SRHR + youth diplomacy). No open cohort call is posted right now, so tracking it as a WATCH to catch the next round.",
+    "qa": [
+      {
+        "q": "Why do you want to be a Women Deliver Young Leader? (illustrative)",
+        "a": "I advocate for women's health and rights — Planned Parenthood's Digital Youth Advisory Board on tech-facilitated sexual violence and inclusive SRHR access — and I want the global platform and network to scale that work, representing young Indonesian and Southeast Asian women."
+      }
+    ]
+  },
+  {
+    "id": "itu-yab",
+    "elig": "✅ Open to all nationalities",
+    "name": "Secretary-General's Youth Advisory Board",
+    "org": "ITU (UN agency for digital technology)",
+    "status": "WATCH",
+    "deadline": "Between rounds — next call est. Dec 2027",
+    "date": "2027-12-01",
+    "est": true,
+    "source": "ITU",
+    "link": "https://www.itu.int/en/action/youth/Pages/itu-secretary-generals-youth-advisory-board.aspx",
+    "prestige": 5,
+    "difficulty": 5,
+    "match": 5,
+    "live": false,
+    "why": "~12-seat appointed board advising the SG on connectivity, AI, and the digital divide. Open to all nationalities. Marquee fit for your online-safety niche.",
+    "qa": [
+      {
+        "q": "Why do you want to serve on the Youth Advisory Board? (illustrative)",
+        "a": "Connectivity is now a children's-rights issue, and I've worked at exactly that intersection: online-safety policy for 32.5M youth on TikTok's Youth Council, research on online child-exploitation and scam vulnerability, and product/data work evaluating multilingual LLMs. I'd bring a Global-South, youth-safety lens to advice on bridging the digital divide."
+      },
+      {
+        "q": "What youth digital issue would you champion? (illustrative)",
+        "a": "Safe-by-design standards for minors that work in low-resource, multilingual contexts — youth-tested features and evaluation methods that reduce both under- and over-enforcement, drawing on my research on false positives in child-protection systems."
+      }
+    ]
+  },
+  {
+    "id": "amnesty-yoco",
+    "elig": "✅ US-based youth — you qualify (LA)",
+    "name": "Youth Collective",
+    "org": "Amnesty International USA",
+    "status": "WATCH",
+    "deadline": "Annual — reopens est. Nov 2026",
+    "date": "2026-11-15",
+    "est": true,
+    "source": "@aiusayouth",
+    "link": "https://www.amnestyusa.org/get-involved/grassroots-activism/youth/yoco/",
+    "prestige": 5,
+    "difficulty": 4,
+    "match": 5,
+    "live": false,
+    "why": "Named US youth human-rights advocacy body — prestigious, US-based, defined seat. Your flagged favorite.",
+    "qa": [
+      {
+        "q": "Why do you want to be part of the Youth Collective? (illustrative)",
+        "a": "I want to organize, not just advise. I've built youth-safety protections on a global platform, researched how digital harms and blunt enforcement fall hardest on the vulnerable, and advocated on tech-facilitated sexual violence with Planned Parenthood. The Youth Collective is where I'd channel that into US human-rights campaigning."
+      },
+      {
+        "q": "What human-rights issue are you most passionate about? (illustrative)",
+        "a": "Digital-age rights: privacy, protection from online exploitation, and free expression for young people — designed with the communities they affect."
+      },
+      {
+        "q": "Describe your leadership experience. (illustrative)",
+        "a": "1 of 28 international members (and 4 Indonesian reps) on TikTok's Youth Council; London Youth Summit delegate; US Embassy diplomacy training with the ASEAN Secretariat; plus financial-literacy programs for 1,000+ micro-entrepreneurs in Indonesia."
+      }
+    ]
+  },
+  {
+    "id": "ohchr-youth4rights",
+    "elig": "❓ Typically asks ~2 yrs HR experience",
+    "name": "Youth4Rights Advisory Group (flagship 12-seat board)",
+    "org": "UN Human Rights Office (OHCHR)",
+    "status": "WATCH",
+    "deadline": "Annual — 2026 round closed 21 Jun; next call est. mid-2027",
+    "date": "2027-06-15",
+    "est": true,
+    "source": "OHCHR",
+    "link": "https://www.ohchr.org",
+    "prestige": 5,
+    "difficulty": 5,
+    "match": 5,
+    "live": false,
+    "why": "The flagship 12-seat UN human-rights youth board — highest prestige & selectivity. Note: typically asks ~2 years of human-rights experience.",
+    "qa": [
+      {
+        "q": "Describe your human-rights experience (2+ years). (illustrative)",
+        "a": "Since 2024: TikTok Youth Council (online-safety protections), Planned Parenthood Digital Youth Advisory Board (tech-facilitated sexual violence), US Embassy Youth Diplomacy Academy (ASEAN Secretariat), and criminal-psychology research on online child-exploitation — a consistent through-line of digital-age rights work at national and global levels."
+      },
+      {
+        "q": "What would you contribute to the Advisory Group? (illustrative)",
+        "a": "A rigorous, Global-South, tech-literate perspective: research skills, multilingual reach (EN/ID native), and experience turning youth input into concrete safeguards."
+      }
+    ]
+  },
+  {
+    "id": "ccswg-yac",
+    "elig": "✅ California residents 14–20 — you qualify",
+    "name": "CCSWG Youth Advisory Council (California)",
+    "org": "California Commission on the Status of Women & Girls",
+    "status": "WATCH",
+    "deadline": "Annual — 2026–27 closed 15 Jul; reopens ~15 May 2027",
+    "date": "2027-05-15",
+    "est": true,
+    "source": "@ccswg",
+    "link": "https://women.ca.gov/ccswg-youth-advisory-council",
+    "prestige": 3,
+    "difficulty": 3,
+    "match": 4,
+    "live": false,
+    "why": "Defined state-level youth advisory seat on women & girls' policy — local to you in California, gender + teen-mental-health focus. Ages 14–20.",
+    "qa": [
+      {
+        "q": "Why do you want to join the Youth Advisory Council? (illustrative)",
+        "a": "I've advocated on tech-facilitated sexual violence with Planned Parenthood and studied online harms to young people. As a student in California, I want to turn that into state-level policy that protects and empowers young women and girls here."
+      },
+      {
+        "q": "What issue affecting young Californians matters most? (illustrative)",
+        "a": "Teen mental health and online safety — how digital platforms shape young women's wellbeing, and which protections actually work."
+      }
+    ]
+  },
+  {
+    "id": "iyd-y20",
+    "elig": "✅ Indonesian nationals — you qualify",
+    "name": "Y20 Delegate (Youth 20)",
+    "org": "Indonesia Youth Diplomacy",
+    "status": "WATCH",
+    "deadline": "Annual — tracks the G20/Y20 cycle; watch for delegate call",
+    "date": null,
+    "est": false,
+    "source": "@id.youthdiplomacy",
+    "link": "https://www.indonesianyouthdiplomacy.org/",
+    "prestige": 4,
+    "difficulty": 5,
+    "match": 5,
+    "live": false,
+    "why": "Represent Indonesia as a Y20 (G20 youth) delegate — a named, competitive diplomatic seat. Direct fit with your US Embassy diplomacy academy & ASEAN work.",
+    "qa": [
+      {
+        "q": "Why do you want to represent Indonesia as a Y20 delegate? (illustrative)",
+        "a": "Indonesia's voice in global youth policy should come from people who've done real cross-border work. Through the US Embassy's Youth Diplomacy Academy I worked with the ASEAN Secretariat and the Indonesian Ministry of Foreign Affairs, and I've represented Indonesian youth on TikTok's global Youth Council. I'd bring that bridge — Indonesia, ASEAN, and the US — to the Y20 table."
+      },
+      {
+        "q": "What policy priority would you bring? (illustrative)",
+        "a": "Digital safety and AI governance for young people — an area where Indonesia can lead the Global South. I'd push for youth-tested, multilingual safety standards, drawing on my online-safety and anti-scam research."
+      }
+    ]
+  },
+  {
+    "id": "un-youth-delegate",
+    "elig": "✅ Indonesian nationals — you qualify",
+    "name": "UN Youth Delegate (Indonesia)",
+    "org": "UN Youth Office · national selection",
+    "status": "WATCH",
+    "deadline": "Country-run selection — watch Indonesian national call",
+    "date": null,
+    "est": false,
+    "source": "@unyouthaffairs",
+    "link": "https://social.desa.un.org/issues/youth/un-youth-delegate-programme",
+    "prestige": 5,
+    "difficulty": 5,
+    "match": 5,
+    "live": false,
+    "why": "Represent your country at the UN General Assembly — the flagship youth-representative seat. Selection runs through national channels (Indonesia).",
+    "qa": [
+      {
+        "q": "Why do you want to be a UN Youth Delegate? (illustrative)",
+        "a": "To carry real youth priorities into the UN, not symbolic ones. I've done the groundwork — global youth-council advocacy, human-rights diplomacy training, research on digital harms — and I'd consult widely across Indonesian youth before speaking on their behalf."
+      },
+      {
+        "q": "What would you consult young people on, and how? (illustrative)",
+        "a": "I'd run structured consultations — surveys and listening sessions in Indonesian and English — on digital rights, online safety, and mental health, then bring those findings, backed by data, into UN forums."
+      }
+    ]
+  },
+  {
+    "id": "civicus-yat",
+    "elig": "✅ Global · youth",
+    "name": "Youth Action Team",
+    "org": "CIVICUS (global civil society alliance)",
+    "status": "WATCH",
+    "deadline": "Annual — next call est. Jan 2027 (2025 ran in Jul)",
+    "date": "2027-01-15",
+    "est": true,
+    "source": "CIVICUS",
+    "link": "https://opportunitydesk.org/tag/civicus-youth-action-team/",
+    "prestige": 4,
+    "difficulty": 4,
+    "match": 4,
+    "live": false,
+    "why": "Named youth body of a major global civil-society alliance — voting members shaping CIVICUS's youth agenda. Strong civic-space / human-rights fit. Recruits annually (watch for the next call).",
+    "qa": [
+      {
+        "q": "Why do you want to join the CIVICUS Youth Action Team? (illustrative)",
+        "a": "My advocacy has always been about widening who gets heard — youth online-safety policy on TikTok's Council, tech-facilitated-violence work with Planned Parenthood, and human-rights diplomacy through the US Embassy academy. CIVICUS is where that connects to the global fight for civic space, and I'd bring a Southeast Asian, digitally-fluent perspective to it."
+      },
+      {
+        "q": "What civic-space issue would you prioritize? (illustrative)",
+        "a": "Digital civic space — protecting young people's rights to organize and speak safely online, and pushing back on surveillance and over-enforcement, drawing on my research into online harms and false positives."
+      }
+    ]
+  },
+  {
+    "id": "oecd-youthwise",
+    "elig": "❓ Verify OECD-country eligibility",
+    "name": "Youthwise (Youth Advisory Board)",
+    "org": "OECD",
+    "status": "WATCH",
+    "deadline": "Annual — opens ~Apr, deadline est. 15 May 2027",
+    "date": "2027-05-15",
+    "est": true,
+    "source": "OECD",
+    "link": "https://www.oecd.org/en/about/programmes/youthwise.html",
+    "prestige": 5,
+    "difficulty": 5,
+    "match": 3,
+    "live": false,
+    "why": "OECD's named youth advisory board; 18–30; ~1-year term shaping OECD policy. Confirm 'OECD country' eligibility (residence vs citizenship).",
+    "qa": [
+      {
+        "q": "How would you represent youth voice in OECD policy? (illustrative)",
+        "a": "By grounding it in data and lived experience. I evaluate multilingual AI systems and build analytics dashboards, and I advise youth bodies on digital safety and health — so I can translate between young people's realities and the evidence policymakers need, especially on the digital economy and youth well-being."
+      },
+      {
+        "q": "Which policy area would you focus on? (illustrative)",
+        "a": "The digital transition and youth mental health — how AI and platforms reshape work, safety, and well-being for young people, and what guardrails actually help."
+      }
+    ]
+  },
+  {
+    "id": "lancet-yap",
+    "elig": "✅ Global",
+    "name": "Youth Advisory Panel — Child & Adolescent Health",
+    "org": "The Lancet",
+    "status": "INVESTIGATE",
+    "deadline": "Window unconfirmed — investigating",
+    "date": null,
+    "est": false,
+    "source": "The Lancet",
+    "link": "https://engage.youth.gov/opportunities/youth-advisory-panel-lancet-child-adolescent-health",
+    "prestige": 5,
+    "difficulty": 4,
+    "match": 4,
+    "live": false,
+    "why": "Named youth advisory/review roles at a top medical journal on adolescent & youth mental health — ties to your psychology thread.",
+    "qa": [
+      {
+        "q": "Why do you want to advise on adolescent health? (illustrative)",
+        "a": "I study Psychological Science and have worked in a decision-neuroscience lab and on youth mental-health-adjacent advocacy. I'd bring research literacy and youth lived experience to how adolescent health evidence is framed and communicated."
+      }
+    ]
+  }
 ];
 const PAST = loadPriv('past', []);
 
