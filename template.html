@@ -24,8 +24,9 @@
     --pill-gray-bg:#EEF0F2;  --pill-gray-tx:#57616F;
     /* System */
     --radius:8px; --radius-sm:6px; --t:150ms ease;
-    --serif:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
-    --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Inter","Segoe UI",sans-serif;
+    --serif:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter","Segoe UI",sans-serif;
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
@@ -53,7 +54,7 @@
   .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:16px;border-bottom:1px solid var(--rule);margin-bottom:32px;flex-wrap:wrap;}
   .brand{display:flex;align-items:center;gap:10px;}
   .monogram{width:30px;height:30px;border:1.5px solid var(--ink);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;}
-  .brandname{font-size:16px;font-weight:600;letter-spacing:-0.01em;}
+  .brandname{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-0.016em;}
   .navtabs{display:flex;gap:24px;}
   .navtabs button{border:0;background:0;padding:4px 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;position:relative;transition:color var(--t);}
   .navtabs button:hover{color:var(--ink);}
@@ -66,10 +67,16 @@
 
   .page{display:none;} .page.active{display:block;}
   .cols{display:grid;grid-template-columns:1fr 300px;gap:48px;align-items:start;}
-  @media(max-width:880px){.cols{grid-template-columns:1fr;gap:32px}.rail{order:-1}}
+  @media(max-width:880px){
+    .cols{grid-template-columns:1fr;gap:28px}.rail{order:2}
+    .row{grid-template-columns:1fr;gap:8px;}
+    .idx{display:none;}
+    .rr{justify-content:flex-start;flex-wrap:wrap;gap:10px;}
+    .meta{display:flex!important;} .quick{display:flex!important;}
+  }
 
   .pagehead{display:flex;align-items:baseline;justify-content:space-between;gap:16px;margin-bottom:16px;flex-wrap:wrap;}
-  .ptitle{font-size:20px;font-weight:600;letter-spacing:-0.015em;}
+  .ptitle{font-family:var(--display);font-size:23px;font-weight:600;letter-spacing:-0.022em;}
   .psub{font-size:13px;color:var(--ink3);}
   .subtabs{display:flex;gap:20px;margin:0 0 4px;}
   .subtabs button{border:0;background:0;padding:3px 0;font-family:var(--sans);font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;position:relative;transition:color var(--t);}
@@ -82,14 +89,55 @@
 
   /* list */
   .item{border-bottom:1px solid var(--rule);}
-  .row{display:grid;grid-template-columns:28px 1fr auto;gap:16px;align-items:center;padding:16px 8px;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t);}
+  .row{display:grid;grid-template-columns:26px 1fr auto;gap:16px;align-items:center;padding:18px 10px;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t);}
   .row:hover{background:var(--hover);}
   .idx{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums;}
   .tt{font-size:16px;line-height:1.35;font-weight:600;letter-spacing:-0.011em;color:var(--ink);}
   .oo{font-size:13px;color:var(--ink2);margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;}
-  .rr{display:flex;align-items:center;gap:14px;white-space:nowrap;}
+  .rr{display:flex;align-items:center;justify-content:flex-end;gap:12px;white-space:nowrap;min-height:28px;}
   .stt{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);}
-  .sdot{width:7px;height:7px;border-radius:50%;} .sdot.open{background:var(--open)} .sdot.watch{background:var(--watch)} .sdot.inv{background:var(--inv)}
+  .sdot{width:7px;height:7px;border-radius:50%;flex:none;} .sdot.open{background:var(--open)} .sdot.watch{background:var(--watch)} .sdot.inv{background:var(--inv)}
+  /* at-a-glance row meta — calm, text-only, single accent for urgency */
+  .meta{display:flex;align-items:center;gap:14px;}
+  .dl{font-size:12.5px;font-variant-numeric:tabular-nums;color:var(--ink3);letter-spacing:.005em;min-width:38px;text-align:right;}
+  .dl.urgent{color:var(--accent);font-weight:600;}
+  .dl.soon{color:var(--ink2);}
+  .dl.ok,.dl.roll,.dl.none,.dl.past{color:var(--ink3);}
+  .meta .dots .d{width:5px;height:5px;}
+  /* inline quick-triage (reveal on hover; always on touch) */
+  .quick{display:none;align-items:center;gap:6px;}
+  .row:hover .meta,.row:focus-within .meta{display:none;}
+  .row:hover .quick,.row:focus-within .quick{display:flex;}
+  .qb{border:1px solid var(--rule2);background:var(--card);border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink2);padding:4px 11px;cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t);}
+  .qb:hover{background:var(--hover);color:var(--ink);}
+  .qb.qy:hover,.qb.qy.on{border-color:var(--open);color:var(--open);background:var(--pill-green-bg);}
+  .qb.qn:hover,.qb.qn.on{border-color:var(--pill-red-tx);color:var(--pill-red-tx);background:var(--pill-red-bg);}
+  .qb.qm.on{border-color:var(--watch);color:var(--pill-amber-tx);background:var(--pill-amber-bg);}
+  @media(hover:none){ .meta{display:flex!important;} .quick{display:flex!important;} .rr{flex-wrap:wrap;} }
+  /* closing-soon — one quiet line, no candy */
+  .thisweek{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:2px 0 20px;font-size:13px;}
+  .thisweek:empty{display:none;}
+  .twlabel{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+  .twlink{border:0;background:0;font-family:var(--sans);font-size:13px;color:var(--ink2);cursor:pointer;padding:0;}
+  .twlink:hover{color:var(--ink);}
+  .twlink b{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600;margin-right:5px;}
+  .etag{display:inline-block;font-size:11px;font-weight:500;color:var(--ink2);background:var(--wash);border:1px solid var(--rule2);border-radius:5px;padding:1px 7px;margin-right:7px;vertical-align:middle;}
+  .etx{color:var(--ink2);font-size:13px;}
+  /* controls: sort + add */
+  .rightbar{display:flex;gap:8px;align-items:center;}
+  .sortsel{border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);color:var(--ink2);font-size:13px;font-family:var(--sans);padding:7px 9px;cursor:pointer;transition:border-color var(--t);}
+  .sortsel:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .railhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;} .railhead h3{margin:0;}
+  /* add-opportunity form */
+  .aoform{display:flex;flex-direction:column;gap:14px;margin:4px 0 4px;}
+  .aolab{display:flex;flex-direction:column;gap:6px;font-size:11px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);font-weight:500;}
+  .aoinput{border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:9px 11px;font-family:var(--sans);font-size:13px;color:var(--ink);transition:border-color var(--t),box-shadow var(--t);}
+  .aoinput::placeholder{color:var(--ink3);} .aoinput:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  /* history stats */
+  .statstrip{display:flex;gap:36px;padding:18px 4px 22px;margin-bottom:12px;border-bottom:1px solid var(--rule);flex-wrap:wrap;}
+  .statstrip .stat{display:flex;flex-direction:column;gap:4px;}
+  .statn{font-family:var(--display);font-size:24px;font-weight:600;letter-spacing:-0.02em;color:var(--ink);font-variant-numeric:tabular-nums;}
+  .statl{font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:500;}
   .badge{font-size:11px;letter-spacing:.005em;font-weight:500;padding:2px 8px;border-radius:var(--radius-sm);vertical-align:middle;}
   .b-yes{color:var(--pill-green-tx);background:var(--pill-green-bg);} .b-maybe{color:var(--pill-amber-tx);background:var(--pill-amber-bg);} .b-no{color:var(--pill-red-tx);background:var(--pill-red-bg);}
   .b-acc{color:var(--pill-green-tx);background:var(--pill-green-bg);} .b-den{color:var(--pill-red-tx);background:var(--pill-red-bg);} .b-sub,.b-wait,.b-toapply{color:var(--pill-amber-tx);background:var(--pill-amber-bg);}
@@ -208,13 +256,14 @@
     </div>
   </div>
 
-  <div id="privbanner" style="display:none;font-size:13px;line-height:1.5;color:var(--ink2);background:var(--accent-subtle);border:1px solid var(--rule);border-radius:8px;padding:12px 16px;margin-bottom:24px;">Your résumé and application history are stored only in this browser — nothing personal is published online. <button class="link" onclick="document.getElementById('importFile').click()">Import your backup file</button> to load them onto this device.</div>
+  <div id="privbanner" style="display:none;font-size:13px;color:var(--ink3);padding:11px 0;margin-bottom:4px;border-bottom:1px solid var(--rule);">Résumé &amp; history stay in this browser only. <button class="link" onclick="document.getElementById('importFile').click()">Import backup</button> to load them here.</div>
 
   <!-- DISCOVER -->
   <section class="page active" id="page-discover">
     <div class="cols">
       <main>
         <div class="pagehead"><div class="ptitle">Discover</div><div class="psub" id="disc-sub"></div></div>
+        <div class="thisweek" id="thisweek"></div>
         <div class="barrow">
           <div class="subtabs" id="disc-tabs">
             <button data-f="new" class="on">New <span class="tc" data-c="new">0</span></button>
@@ -223,7 +272,15 @@
             <button data-f="no">Dismissed <span class="tc" data-c="no">0</span></button>
             <button data-f="all">All <span class="tc" data-c="all">0</span></button>
           </div>
-          <input class="search" id="disc-search" placeholder="Search">
+          <div class="rightbar">
+            <button class="mini" onclick="openAdd()">+ Add</button>
+            <select class="sortsel" id="disc-sort" onchange="discSort=this.value;renderDiscover();" title="Sort">
+              <option value="best">Best bets</option>
+              <option value="deadline">Deadline</option>
+              <option value="match">Match</option>
+            </select>
+            <input class="search" id="disc-search" placeholder="Search">
+          </div>
         </div>
         <div id="disc-list"></div>
       </main>
@@ -233,7 +290,7 @@
           <div class="cal" id="cal"></div>
           <div class="calpick" id="calPick"></div>
         </div>
-        <div class="block"><h3>Upcoming deadlines</h3><div class="up" id="up"></div></div>
+        <div class="block"><div class="railhead"><h3>Upcoming deadlines</h3><button class="mini" onclick="icsAll()">Export .ics</button></div><div class="up" id="up"></div></div>
       </aside>
     </div>
   </section>
@@ -273,6 +330,20 @@
     </div>
   </div>
 </div>
+<div class="rov" id="addov">
+  <div class="rpanel" style="max-width:520px">
+    <div class="rhead"><div class="rtitle">Add an opportunity</div><button class="rx" onclick="closeAdd()">Close ✕</button></div>
+    <div class="rsub">Spotted something on Instagram or from a friend? Drop it here — it stays in this browser and shows up in Discover to triage.</div>
+    <div class="aoform">
+      <label class="aolab">Name<input id="ao-name" class="aoinput" placeholder="e.g. UN Women Youth Fellowship"></label>
+      <label class="aolab">Organization<input id="ao-org" class="aoinput" placeholder="e.g. UN Women"></label>
+      <label class="aolab">Link<input id="ao-link" class="aoinput" placeholder="https://…"></label>
+      <label class="aolab">Deadline<input id="ao-date" class="aoinput" type="date"></label>
+      <label class="aolab">Notes<textarea id="ao-note" class="aoinput" style="min-height:64px;resize:vertical" placeholder="Why it caught your eye, eligibility, etc."></textarea></label>
+    </div>
+    <div class="linkrow"><button class="btnink" onclick="submitAdd()">Add to Discover</button><button class="link" onclick="closeAdd()">Cancel</button></div>
+  </div>
+</div>
 <div id="toast" class="toast"></div>
 
 <script>
@@ -303,7 +374,21 @@ const stCls=s=>({"Accepted":"b-acc","Denied":"b-den","Submitted":"b-sub","Waitin
 const triLabel=t=>({yes:"Tracker",maybe:"Maybe",no:"Dismissed"}[t]||"");
 const triCls=t=>({yes:"b-yes",maybe:"b-maybe",no:"b-no"}[t]||"");
 function inWindow(d){ if(d.status==='OPEN')return true; if(!d.date)return false; const dt=new Date(d.date+"T00:00:00"); const now=new Date(); now.setHours(0,0,0,0); const days=(dt-now)/86400000; return days>=0&&days<=93; }
-const OPPS=DATA.filter(inWindow);
+/* user-added opportunities (stored only in this browser, merged into the list) */
+let USEROPPS=loadPriv('useropps',[]); if(Array.isArray(USEROPPS)&&USEROPPS.length) DATA.push(...USEROPPS);
+let OPPS=DATA.filter(inWindow);
+function recomputeOpps(){ OPPS=DATA.filter(inWindow); }
+/* Best-bets priority: reward fit, penalise difficulty, boost closing-soon & clear eligibility */
+function priority(d){
+  let p=d.match*2+(6-d.difficulty);
+  const dl=daysLeft(d);
+  if(dl!==null&&dl>=0&&dl<=30) p+=(30-dl)/8; else if(d.status==='OPEN') p+=1.4;
+  const tag=eligParse(d.elig).tag;
+  if(tag==='Eligible'||tag==='Global') p+=2; else if(tag==='Check'||tag==='Verify'||tag==='US only') p-=1;
+  return p;
+}
+function gcalLink(d){ if(!d.date) return '#'; const s=d.date.replace(/-/g,''); const dt=new Date(d.date+"T00:00:00"); const e=new Date(dt.getTime()+86400000); const es=e.getFullYear()+String(e.getMonth()+1).padStart(2,'0')+String(e.getDate()).padStart(2,'0'); return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent('Deadline · '+d.name)}&dates=${s}/${es}&details=${encodeURIComponent((d.org||'')+'  '+(d.link||''))}`; }
+function icsAll(){ const items=chosenOpps().filter(d=>d.date); if(!items.length){toast('No dated Yes/Maybe picks yet');return;} let ics="BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//Nadyne Tracker//EN\r\n"; items.forEach(d=>{ const s=d.date.replace(/-/g,''); ics+=`BEGIN:VEVENT\r\nUID:${d.id}@nadyne-tracker\r\nDTSTART;VALUE=DATE:${s}\r\nSUMMARY:Deadline · ${d.name.replace(/[,;]/g,' ')}\r\nDESCRIPTION:${(d.org||'').replace(/[,;]/g,' ')} ${d.link||''}\r\nEND:VEVENT\r\n`; }); ics+="END:VCALENDAR"; download('nadyne-deadlines.ics', ics, 'text/calendar'); toast('Calendar file downloaded'); }
 const byId=id=>DATA.find(d=>d.id===id);
 
 /* ---------- saved state ---------- */
@@ -330,16 +415,36 @@ function showPage(p){ page=p; document.querySelectorAll('.page').forEach(s=>s.cl
 document.querySelectorAll('#navtabs button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.p)));
 
 /* ---------- DISCOVER ---------- */
-let discFilter="new", discQ="";
+let discFilter="new", discQ="", discSort="best";
 const openSet=new Set();
 function toggle(id){ openSet.has(id)?openSet.delete(id):openSet.add(id); renderDiscover(); }
+function daysLeft(d){ if(!d.date) return null; const dt=new Date(d.date+"T00:00:00"); const now=new Date(); now.setHours(0,0,0,0); return Math.round((dt-now)/86400000); }
+function deadlineChip(d){
+  const dl=daysLeft(d);
+  if(dl===null){ return /rolling/i.test(d.deadline)?{txt:'Rolling',cls:'roll'}:{txt:'TBC',cls:'none'}; }
+  if(dl<0) return {txt:'Closed',cls:'past'};
+  if(dl===0) return {txt:'Today',cls:'urgent'};
+  if(dl<=60) return {txt:dl+'d'+(d.est?' est':''),cls: dl<=7?'urgent':dl<=21?'soon':'ok'};
+  const dt=new Date(d.date+"T00:00:00");
+  return {txt:(d.est?'~':'')+MON[dt.getMonth()].slice(0,3)+" '"+String(dt.getFullYear()).slice(2),cls:'ok'};
+}
+function eligParse(s){ s=(s||'').trim(); const map={'✅':'Eligible','⚠️':'Check','🇺🇸':'US only','🌏':'Global','❓':'Verify'};
+  for(const k in map){ if(s.indexOf(k)===0) return {tag:map[k], rest:s.slice(k.length).replace(/^[\s·—–-]+/,'').trim()}; }
+  return {tag:'', rest:s}; }
 function discItem(d,i){
-  const s=sv(d.id), sm=smeta(d.status), opened=openSet.has(d.id), tri=s.triage;
-  return `<div class="item">
-    <div class="row" onclick="toggle('${d.id}')">
+  const s=sv(d.id), sm=smeta(d.status), opened=openSet.has(d.id), tri=s.triage, chip=deadlineChip(d), eg=eligParse(d.elig);
+  return `<div class="item" id="row-${d.id}">
+    <div class="row" role="button" tabindex="0" aria-expanded="${opened}" onclick="toggle('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggle('${d.id}');}">
       <div class="idx tnum">${pad(i)}</div>
       <div><div class="tt">${d.name}</div><div class="oo">${d.org}${tri?` &nbsp;·&nbsp; <span class="badge ${triCls(tri)}">${triLabel(tri)}</span>`:''}</div></div>
-      <div class="rr"><span class="stt"><span class="sdot ${sm.c}"></span>${sm.t}</span></div>
+      <div class="rr">
+        <span class="meta"><span class="dl ${chip.cls}">${chip.txt}</span><span title="Portfolio match ${d.match}/5">${dotsHTML(d.match)}</span></span>
+        <span class="quick">
+          <button class="qb qy${tri==='yes'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','yes')" title="Yes — add to tracker">Yes</button>
+          <button class="qb qm${tri==='maybe'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','maybe')" title="Maybe">Maybe</button>
+          <button class="qb qn${tri==='no'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','no')" title="Dismiss" aria-label="Dismiss">✕</button>
+        </span>
+      </div>
     </div>
     <div class="detail ${opened?'open':''}"><div class="detailin">
       <div class="why">${d.why}</div>
@@ -349,7 +454,7 @@ function discItem(d,i){
         <div><div class="lab">Difficulty</div><div class="val">${dotsHTML(d.difficulty)}</div></div>
         <div><div class="lab">Portfolio match</div><div class="val">${dotsHTML(d.match)}</div></div>
         <div><div class="lab">Source</div><div class="val">${d.source}</div></div>
-        <div><div class="lab">Eligibility</div><div class="val">${d.elig||'❓ verify'}</div></div>
+        <div><div class="lab">Eligibility</div><div class="val">${eg.tag?`<span class="etag">${eg.tag}</span>`:''}<span class="etx">${esc(eg.rest||'verify')}</span></div></div>
       </div>
       <div class="ctrlbar">
         <span class="clab">Add to tracker?</span>
@@ -358,10 +463,25 @@ function discItem(d,i){
       </div>
       <div class="linkrow">
         <a class="btnghost" href="${d.link}" target="_blank" rel="noopener">Open application ↗</a>
+        ${d.date?`<a class="link" href="${gcalLink(d)}" target="_blank" rel="noopener">Add to calendar</a>`:''}
         ${tri==='yes'?`<button class="link" onclick="showPage('write')">Start your application →</button>`:''}
       </div>
     </div></div>
   </div>`;
+}
+function openAdd(){ document.getElementById('addov').classList.add('show'); setTimeout(()=>{const n=document.getElementById('ao-name');if(n)n.focus();},50); }
+function closeAdd(){ document.getElementById('addov').classList.remove('show'); }
+function submitAdd(){
+  const g=id=>{const el=document.getElementById(id);return el?el.value.trim():'';};
+  const name=g('ao-name'); if(!name){ toast('Give it a name'); return; }
+  const date=g('ao-date')||null;
+  const e={ id:'user-'+Date.now(), name, org:g('ao-org')||'Added by you', status:'OPEN',
+    deadline: date?('Closes '+fmt(date)):'Added — no deadline set', date, est:false, source:'You',
+    link:g('ao-link')||'#', prestige:3, difficulty:3, match:3, live:true, cat:'Organization',
+    elig:'❓ verify', why:g('ao-note')||'Added manually.', qa:[] };
+  USEROPPS.push(e); savePriv('useropps',USEROPPS); DATA.push(e); recomputeOpps();
+  ['ao-name','ao-org','ao-link','ao-date','ao-note'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  closeAdd(); discFilter='new'; document.querySelectorAll('#disc-tabs button').forEach(x=>x.classList.toggle('on',x.dataset.f==='new')); renderAll(); toast('Added to Discover');
 }
 function renderDiscover(){
   const base=OPPS.filter(d=>!sv(d.id).status); // once you've started applying (status set), it moves to History and leaves Discover
@@ -374,7 +494,9 @@ function renderDiscover(){
     const okQ=!discQ||(d.name+' '+d.org+' '+d.why).toLowerCase().includes(discQ);
     return okF&&okQ;
   });
-  list.sort((a,b)=>b.match-a.match);
+  const dv=x=>{const A=daysLeft(x); return A===null?99999:A<0?99998:A;};
+  const cmp = discSort==='deadline' ? (a,b)=>dv(a)-dv(b) : discSort==='match' ? (a,b)=>b.match-a.match : (a,b)=>priority(b)-priority(a);
+  list.sort(cmp);
   let html='',n=0;
   CATS.forEach(cat=>{ const items=list.filter(d=>catOf(d)===cat); if(!items.length)return; html+=`<div class="catgap">${cat}<span class="c">${pad(items.length)}</span></div>`; items.forEach(d=>{n++;html+=discItem(d,n);}); });
   const msg = discFilter==='no'?'Nothing dismissed.':discFilter==='yes'?'Nothing marked “Yes” yet.':discFilter==='maybe'?'Nothing marked “Maybe”.':'Nothing new right now.';
@@ -430,16 +552,33 @@ function histCard(it){
     ${it.kind==='app'?`<div class="linkrow"><button class="mini" onclick="clearStatus('${it.id}')">Remove (back to Discover)</button></div>`:''}
   </div>`;
 }
+function historyStats(items){
+  const acc=items.filter(i=>i.status==='Accepted').length, den=items.filter(i=>i.status==='Denied').length, pend=items.length-acc-den;
+  const decided=acc+den, rate=decided?Math.round(acc/decided*100):0;
+  const cell=(n,l)=>`<div class="stat"><div class="statn">${n}</div><div class="statl">${l}</div></div>`;
+  return `<div class="statstrip">${cell(items.length,'Total')}${cell(acc,'Accepted')}${cell(den,'Denied')}${cell(pend,'Pending')}${cell(rate+'%','Accept rate')}</div>`;
+}
 function renderHistory(){
   const items=histItems();
   const se=document.getElementById('hist-search'); const q=se?se.value.toLowerCase().trim():'';
   const groups=[["Pending / waiting",it=>it.status!=='Accepted'&&it.status!=='Denied'],["Accepted",it=>it.status==='Accepted'],["Denied",it=>it.status==='Denied']];
-  let html='';
+  let html=items.length?historyStats(items):'';
   groups.forEach(([label,pred])=>{ let list=items.filter(pred); if(q)list=list.filter(it=>(it.name+' '+it.org).toLowerCase().includes(q)); if(!list.length)return; html+=`<div class="catgap">${label}<span class="c">${pad(list.length)}</span></div>`+list.map(histCard).join(''); });
   document.getElementById('hist-list').innerHTML = html || '<div class="empty">Nothing here yet.<small>Your past applications load automatically; new ones appear when you submit from Write.</small></div>';
 }
 
-function renderAll(){ renderDiscover(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); }
+function renderThisWeek(){
+  const el=document.getElementById('thisweek'); if(!el) return;
+  const soon=OPPS.filter(d=>!sv(d.id).status).map(d=>({d,dl:daysLeft(d)})).filter(x=>x.dl!==null&&x.dl>=0&&x.dl<=21).sort((a,b)=>a.dl-b.dl);
+  const inProg=DATA.filter(d=>sv(d.id).triage==='yes'&&!sv(d.id).status).length;
+  if(!soon.length&&!inProg){ el.innerHTML=''; return; }
+  let html='<span class="twlabel">Closing soon</span>';
+  soon.forEach(({d,dl})=>{ html+=`<button class="twlink" onclick="jumpTo('${d.id}')"><b>${dl===0?'Today':dl+'d'}</b>${esc(d.name.length>34?d.name.slice(0,32)+'…':d.name)}</button>`; });
+  if(inProg) html+=`<button class="twlink prog" onclick="showPage('write')"><b>${inProg}</b>in progress →</button>`;
+  el.innerHTML=html;
+}
+function jumpTo(id){ openSet.add(id); if(page!=='discover'){ showPage('discover'); } else { renderDiscover(); } const el=document.getElementById('row-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+function renderAll(){ renderDiscover(); renderThisWeek(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); }
 
 /* ---------- calendar + upcoming ---------- */
 let calRef, userNav=false;
@@ -524,13 +663,14 @@ function scoreResume(text){
   return {score,empty:false,cats,wc};
 }
 document.getElementById('rov').addEventListener('click',e=>{ if(e.target.id==='rov') closeResume(); });
+document.getElementById('addov').addEventListener('click',e=>{ if(e.target.id==='addov') closeAdd(); });
 
 /* ---------- listeners + init ---------- */
 document.getElementById('disc-search').addEventListener('input',e=>{discQ=e.target.value.toLowerCase().trim();renderDiscover();});
 document.querySelectorAll('#disc-tabs button').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('#disc-tabs button').forEach(x=>x.classList.remove('on'));b.classList.add('on');discFilter=b.dataset.f;renderDiscover();}));
 
 /* ---------- private backup: export / import ---------- */
-function download(name,text){ const a=document.createElement('a'); const url=URL.createObjectURL(new Blob([text],{type:'application/json'})); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
+function download(name,text,mime){ const a=document.createElement('a'); const url=URL.createObjectURL(new Blob([text],{type:mime||'application/json'})); a.href=url; a.download=name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),1000); }
 function exportData(){ const data={ _type:'nadyne-tracker-backup', savedAt:new Date().toISOString().slice(0,10), past:loadPriv('past',[]), resume:loadPriv('resume',''), opps:JSON.parse(localStorage.getItem(SKEY)||'{}'), hist:JSON.parse(localStorage.getItem(HKEY)||'{}'), resumeVersions:JSON.parse(localStorage.getItem(RKEY)||'null') }; download('nadyne-tracker-backup.json', JSON.stringify(data,null,2)); toast('Backup downloaded'); }
 function importData(file){ const r=new FileReader(); r.onload=()=>{ try{ const o=JSON.parse(r.result); if('past' in o) savePriv('past',o.past||[]); if('resume' in o) savePriv('resume',o.resume||''); if(o.opps) localStorage.setItem(SKEY,JSON.stringify(o.opps)); if(o.hist) localStorage.setItem(HKEY,JSON.stringify(o.hist)); if(o.resumeVersions) localStorage.setItem(RKEY,JSON.stringify(o.resumeVersions)); toast('Imported — reloading'); setTimeout(()=>location.reload(),500); }catch(e){ toast('Could not read that file'); } }; r.readAsText(file); }
 function updatePrivBanner(){ const b=document.getElementById('privbanner'); if(!b)return; const has=(PAST&&PAST.length)||((MASTER_RESUME||'').trim().length); b.style.display=has?'none':'block'; }
