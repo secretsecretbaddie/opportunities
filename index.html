@@ -252,6 +252,7 @@
   .wsp{flex:1;border:1px solid var(--rule2);background:var(--card);border-radius:5px;font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--ink3);padding:4px 2px;cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t);white-space:nowrap;}
   .wsp:hover{color:var(--ink2);background:var(--hover);} .wsp.on{background:var(--accent-subtle);border-color:var(--accent-subtle);color:var(--accent-ink);}
   .wstagebar{display:flex;align-items:center;gap:7px;margin:14px 0 2px;flex-wrap:wrap;} .wstagebar .wsp{flex:0 0 auto;padding:5px 12px;font-size:12px;}
+  .wm-submit{width:100%;margin-top:9px;background:var(--accent);color:#fff;border:0;border-radius:5px;font-family:var(--sans);font-size:12px;font-weight:600;padding:8px;cursor:pointer;transition:background var(--t);} .wm-submit:hover{background:var(--accent-ink);}
   .backlink{border:0;background:0;color:var(--ink3);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;padding:0;margin-bottom:16px;transition:color var(--t);} .backlink:hover{color:var(--accent);}
   /* requirements checklist */
   .reqbox{border:1px solid var(--rule);border-radius:var(--radius);background:var(--bg-subtle);padding:15px 16px;margin:18px 0 6px;}
@@ -1424,6 +1425,7 @@ function writeMini(d){
     <div class="wm-tags">${catTag(d)}${reqsOf(d.id).length?`<span class="ntag reqtag">✓ ${reqDone(d.id)}/${reqsOf(d.id).length}</span>`:''}</div>
     <div class="wm-meta"><span class="dl ${chip.cls}">${chip.txt}</span><span class="wm-prog">${a}/${t} drafted</span></div>
     <div class="wm-stage">${moves}</div>
+    ${st==='ready'?`<button class="wm-submit" onclick="event.stopPropagation();submitFromBoard('${d.id}')">Mark as submitted →</button>`:''}
   </div>`;
 }
 function writeEditor(d,inList){
