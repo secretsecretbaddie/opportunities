@@ -207,6 +207,7 @@
   .up .upi{display:flex;gap:12px;padding:12px 0;border-top:1px solid var(--rule);} .up .upi:first-child{border-top:0}
   .upi .dot{width:6px;height:6px;border-radius:50%;margin-top:7px;flex:none;background:var(--accent)} .upi .dot.est{background:0;box-shadow:inset 0 0 0 1px var(--accent)} .upi .dot.roll{background:var(--ink3)}
   .upi .n{font-size:13px;font-weight:500;line-height:1.4;color:var(--ink)} .upi .uorg{font-size:12px;color:var(--ink3);margin-top:1px} .upi .dd{font-size:12px;color:var(--ink3);margin-top:2px}
+  a.upi{text-decoration:none;color:inherit;border-radius:6px;margin:0 -6px;padding-left:6px;padding-right:6px;transition:background var(--t);cursor:pointer;} a.upi:hover{background:var(--hover);} a.upi:hover .n{color:var(--accent);}
 
   /* résumé modal */
   .rov{position:fixed;inset:0;background:rgba(31,32,35,.4);display:none;align-items:flex-start;justify-content:center;padding:40px 20px;z-index:80;overflow:auto;} .rov.show{display:flex;}
@@ -1041,6 +1042,7 @@ const DATA = [
     ]
   }
 ];
+
 const PAST = loadPriv('past', []);
 
 /* ---------- password gate ---------- */
@@ -1198,7 +1200,7 @@ function writeCard(d){
   const tail = d.tailored ? `<button class="mini" onclick="useTailored('${d.id}')">View tailored résumé</button>` : '';
   return `<div class="wcard">
     <div class="wtop"><div><div class="wname">${d.name}</div><div class="worg">${d.org}</div></div>
-      <div class="linkrow" style="margin:0"><a class="btnghost" href="${d.link}" target="_blank" rel="noopener">Open form ↗</a></div></div>
+      <div class="linkrow" style="margin:0"><a class="btnink" href="${d.link}" target="_blank" rel="noopener">Apply →</a></div></div>
     <div class="ctrlbar" style="margin-top:16px">
       <span class="clab">Tailored résumé</span>${tail}
       <button class="mini" onclick="tailorHandoff('${d.id}')">Tailor for this with Claude</button>
@@ -1295,8 +1297,9 @@ function upcoming(){
   const ch=chosenOpps();
   const dated=ch.filter(d=>d.date).sort((a,b)=>new Date(a.date)-new Date(b.date));
   const roll=ch.filter(d=>!d.date&&/rolling/i.test(d.deadline));
-  let h=''; dated.forEach(d=>{h+=`<div class="upi"><span class="dot ${d.est?'est':''}"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">${fmt(d.date)}${d.est?' · est.':''}</div></div></div>`;});
-  roll.forEach(d=>{h+=`<div class="upi"><span class="dot roll"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">Rolling — open now</div></div></div>`;});
+  const upTag=(d,inner)=>{const real=d.link&&d.link!=='#';return real?`<a class="upi" href="${d.link}" target="_blank" rel="noopener">${inner}</a>`:`<div class="upi">${inner}</div>`;};
+  let h=''; dated.forEach(d=>{h+=upTag(d,`<span class="dot ${d.est?'est':''}"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">${fmt(d.date)}${d.est?' · est.':''}</div></div>`);});
+  roll.forEach(d=>{h+=upTag(d,`<span class="dot roll"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">Rolling — open now</div></div>`);});
   document.getElementById('up').innerHTML=h||'<div style="color:var(--faint);font-size:12px;line-height:1.5">Say “Yes” or “Maybe” on Discover and their deadlines show up here.</div>';
 }
 
