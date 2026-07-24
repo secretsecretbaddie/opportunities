@@ -310,11 +310,11 @@
       </main>
       <aside class="rail">
         <div class="block">
-          <div class="calhead"><span class="m" id="calTitle">Month</span><span class="calnav"><button onclick="calMove(-1)">‹</button><button onclick="calMove(1)">›</button></span></div>
-          <div class="cal" id="cal"></div>
-          <div class="calpick" id="calPick"></div>
+          <div class="calhead"><span class="m js-caltitle" id="calTitle">Month</span><span class="calnav"><button onclick="calMove(-1)">‹</button><button onclick="calMove(1)">›</button></span></div>
+          <div class="cal js-cal" id="cal"></div>
+          <div class="calpick js-calpick" id="calPick"></div>
         </div>
-        <div class="block"><div class="railhead"><h3>Upcoming deadlines</h3><button class="mini" onclick="icsAll()">Export .ics</button></div><div class="up" id="up"></div></div>
+        <div class="block"><div class="railhead"><h3>Upcoming deadlines</h3><button class="mini" onclick="icsAll()">Export .ics</button></div><div class="up js-up" id="up"></div></div>
       </aside>
     </div>
   </section>
@@ -322,7 +322,17 @@
   <!-- WRITE -->
   <section class="page" id="page-write">
     <div class="pagehead"><div class="ptitle">Apply</div><div class="psub">Applications for the opportunities you said “Yes” to. Edits save automatically.</div></div>
-    <div id="write-list"></div>
+    <div class="cols">
+      <main><div id="write-list"></div></main>
+      <aside class="rail">
+        <div class="block">
+          <div class="calhead"><span class="m js-caltitle">Month</span><span class="calnav"><button onclick="calMove(-1)">‹</button><button onclick="calMove(1)">›</button></span></div>
+          <div class="cal js-cal"></div>
+          <div class="calpick js-calpick"></div>
+        </div>
+        <div class="block"><div class="railhead"><h3>Upcoming deadlines</h3><button class="mini" onclick="icsAll()">Export .ics</button></div><div class="up js-up"></div></div>
+      </aside>
+    </div>
   </section>
 
   <!-- HISTORY -->
@@ -1336,7 +1346,7 @@ function calInit(){ anchorCal(); calRender(); }
 function calMove(n){ userNav=true; calRef=new Date(calRef.getFullYear(),calRef.getMonth()+n,1); calRender(); }
 function calRender(){
   const y=calRef.getFullYear(),m=calRef.getMonth();
-  document.getElementById('calTitle').textContent=MON[m]+" "+y;
+  document.querySelectorAll('.js-caltitle').forEach(e=>e.textContent=MON[m]+" "+y);
   const map={}; chosenOpps().filter(d=>d.date).forEach(d=>{const dt=new Date(d.date+"T00:00:00");const k=dt.getFullYear()+"-"+dt.getMonth()+"-"+dt.getDate();(map[k]=map[k]||[]).push(d);});
   const t=new Date();t.setHours(0,0,0,0);
   const first=new Date(y,m,1).getDay(), days=new Date(y,m+1,0).getDate(), prev=new Date(y,m,0).getDate();
@@ -1345,10 +1355,10 @@ function calRender(){
   for(let d=1;d<=days;d++){ const k=y+"-"+m+"-"+d,has=map[k],today=(t.getFullYear()===y&&t.getMonth()===m&&t.getDate()===d),est=has&&has.every(x=>x.est);
     let chip=''; if(has){ chip=`<span class="cev ${est?'est':''}" title="${esc(has.map(x=>x.name).join(', '))}">${esc(has[0].name)}</span>`+(has.length>1?`<span class="cev more">+${has.length-1} more</span>`:''); }
     h+=`<div class="c ${today?'today':''} ${has?'has':''}">${d}${chip}</div>`; }
-  document.getElementById('cal').innerHTML=h;
+  document.querySelectorAll('.js-cal').forEach(e=>e.innerHTML=h);
   const keys=Object.keys(map).filter(k=>{const p=k.split('-'); return (+p[0])===y && (+p[1])===m;}).sort((a,b)=>(+a.split('-')[2])-(+b.split('-')[2]));
   let ml=''; keys.forEach(k=>{const dd=k.split('-')[2]; map[k].forEach(x=>{ ml+=`<div class="cle"><span class="cled">${dd} ${MON[m].slice(0,3)}</span><span class="clen">${x.name}${x.est?' <em>(est.)</em>':''}<span class="clorg">${x.org}</span></span></div>`; }); });
-  document.getElementById('calPick').innerHTML = ml || '<div class="calempty">No deadlines this month among your Yes/Maybe picks.</div>';
+  document.querySelectorAll('.js-calpick').forEach(e=>e.innerHTML = ml || '<div class="calempty">No deadlines this month among your Yes/Maybe picks.</div>');
 }
 function upcoming(){
   const ch=chosenOpps();
@@ -1357,7 +1367,7 @@ function upcoming(){
   const upTag=(d,inner)=>{const real=d.link&&d.link!=='#';return real?`<a class="upi" href="${d.link}" target="_blank" rel="noopener">${inner}</a>`:`<div class="upi">${inner}</div>`;};
   let h=''; dated.forEach(d=>{h+=upTag(d,`<span class="dot ${d.est?'est':''}"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">${fmt(d.date)}${d.est?' · est.':''}</div></div>`);});
   roll.forEach(d=>{h+=upTag(d,`<span class="dot roll"></span><div><div class="n">${d.name}</div><div class="uorg">${d.org}</div><div class="dd">Rolling — open now</div></div>`);});
-  document.getElementById('up').innerHTML=h||'<div style="color:var(--faint);font-size:12px;line-height:1.5">Say “Yes” or “Maybe” on Discover and their deadlines show up here.</div>';
+  document.querySelectorAll('.js-up').forEach(e=>e.innerHTML=h||'<div style="color:var(--faint);font-size:12px;line-height:1.5">Say “Yes” or “Maybe” on Discover and their deadlines show up here.</div>');
 }
 
 /* ---------- résumé workbench ---------- */
