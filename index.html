@@ -182,6 +182,29 @@
   .mini{border:1px solid var(--rule2);background:var(--card);border-radius:var(--radius-sm);font-size:12px;font-weight:500;color:var(--ink2);padding:6px 11px;cursor:pointer;font-family:var(--sans);transition:background var(--t),color var(--t);} .mini:hover{color:var(--ink);background:var(--hover);}
   .empty{color:var(--ink2);font-size:15px;padding:40px 8px;}
   .empty small{display:block;font-size:13px;color:var(--ink3);margin-top:8px;}
+  /* write board */
+  .wtoolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:2px 0 20px;flex-wrap:wrap;}
+  .wsum{font-size:13px;color:var(--ink3);} .wsum b{color:var(--accent-ink);font-weight:600;}
+  .vtoggle{display:inline-flex;border:1px solid var(--rule2);border-radius:var(--radius-sm);overflow:hidden;}
+  .vtoggle button{border:0;border-right:1px solid var(--rule2);background:var(--card);font-family:var(--sans);font-size:12.5px;font-weight:500;color:var(--ink2);padding:6px 13px;cursor:pointer;transition:background var(--t),color var(--t);}
+  .vtoggle button:last-child{border-right:0;} .vtoggle button:hover{background:var(--hover);color:var(--ink);} .vtoggle button.on{background:var(--accent);color:#fff;}
+  .wboard{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;align-items:start;}
+  .wcol{background:var(--bg-subtle);border:1px solid var(--rule);border-radius:var(--radius);padding:12px 12px 14px;min-height:90px;}
+  .wcol-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:600;padding:4px 4px 12px;}
+  .wcol-h .c{font-variant-numeric:tabular-nums;color:var(--faint);font-weight:600;}
+  .wcol-empty{font-size:12px;color:var(--faint);padding:10px 4px;text-align:center;}
+  .wmini{background:var(--card);border:1px solid var(--rule2);border-radius:var(--radius-sm);padding:12px 13px;margin-bottom:10px;cursor:pointer;transition:border-color var(--t),box-shadow var(--t),transform var(--t);}
+  .wmini:last-child{margin-bottom:0;} .wmini:hover{border-color:var(--faint);box-shadow:0 1px 3px rgba(31,32,35,.06);}
+  .wm-name{font-size:13.5px;font-weight:600;line-height:1.35;letter-spacing:-0.006em;color:var(--ink);}
+  .wm-org{font-size:12px;color:var(--ink3);margin-top:2px;}
+  .wm-meta{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:10px;}
+  .wm-meta .dl{min-width:0;text-align:left;} .wm-prog{font-size:11.5px;color:var(--ink3);font-variant-numeric:tabular-nums;}
+  .wm-stage{display:flex;gap:5px;margin-top:11px;padding-top:10px;border-top:1px solid var(--rule);}
+  .wsp{flex:1;border:1px solid var(--rule2);background:var(--card);border-radius:5px;font-family:var(--sans);font-size:10.5px;font-weight:500;color:var(--ink3);padding:4px 2px;cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t);white-space:nowrap;}
+  .wsp:hover{color:var(--ink2);background:var(--hover);} .wsp.on{background:var(--accent-subtle);border-color:var(--accent-subtle);color:var(--accent-ink);}
+  .wstagebar{display:flex;align-items:center;gap:7px;margin:14px 0 2px;flex-wrap:wrap;} .wstagebar .wsp{flex:0 0 auto;padding:5px 12px;font-size:12px;}
+  .backlink{border:0;background:0;color:var(--ink3);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;padding:0;margin-bottom:16px;transition:color var(--t);} .backlink:hover{color:var(--accent);}
+  @media(max-width:760px){ .wboard{grid-template-columns:1fr;gap:12px;} .wcol{background:0;border:0;border-radius:0;padding:0;margin-bottom:4px;} .wcol-h{border-bottom:1px solid var(--rule);padding:6px 2px 10px;} .wcol-empty{text-align:left;} }
 
   /* rail */
   .rail h3{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin:0 0 16px;}
@@ -1195,26 +1218,60 @@ function renderDiscover(){
   document.getElementById('disc-sub').textContent = OPPS.length+' open or due within 3 months';
 }
 
-/* ---------- WRITE ---------- */
-function writeCard(d){
+/* ---------- WRITE (Apply board) ---------- */
+let writeView="board", writeOpen=null;
+const WSTAGES=[['start','Not started'],['draft','Drafting'],['ready','Ready to submit']];
+function wAnswered(d){ const s=SAVED[d.id]; if(!s||!s.answers) return 0; let n=0; d.qa.forEach((q,j)=>{ const v=s.answers[j]; if(v!=null && String(v).trim()!=='') n++; }); return n; }
+function wstageOf(d){ const s=sv(d.id); if(s.wstage) return s.wstage; return wAnswered(d)>0 ? 'draft' : 'start'; }
+function setWStage(id,s){ SAVED[id]=SAVED[id]||{}; SAVED[id].wstage=s; persist(); renderWrite(); }
+function setWriteView(v){ writeView=v; writeOpen=null; renderWrite(); }
+function openWrite(id){ writeOpen=id; renderWrite(); window.scrollTo(0,0); }
+function closeWrite(){ writeOpen=null; renderWrite(); window.scrollTo(0,0); }
+function viewToggle(){ return `<div class="vtoggle"><button class="${writeView==='board'?'on':''}" onclick="setWriteView('board')">Board</button><button class="${writeView==='list'?'on':''}" onclick="setWriteView('list')">List</button></div>`; }
+function writeMini(d){
+  const chip=deadlineChip(d), a=wAnswered(d), t=d.qa.length, st=wstageOf(d);
+  const moves=[['start','To start'],['draft','Draft'],['ready','Ready']].map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="event.stopPropagation();setWStage('${d.id}','${k}')">${l}</button>`).join('');
+  return `<div class="wmini" role="button" tabindex="0" onclick="openWrite('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWrite('${d.id}');}">
+    <div class="wm-name">${d.name}</div><div class="wm-org">${d.org}</div>
+    <div class="wm-meta"><span class="dl ${chip.cls}">${chip.txt}</span><span class="wm-prog">${a}/${t} drafted</span></div>
+    <div class="wm-stage">${moves}</div>
+  </div>`;
+}
+function writeEditor(d,inList){
   const tail = d.tailored ? `<button class="mini" onclick="useTailored('${d.id}')">View tailored résumé</button>` : '';
+  const back = inList ? '' : `<button class="backlink" onclick="closeWrite()">← Back to board</button>`;
+  const st=wstageOf(d);
+  const stageSel=WSTAGES.map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="setWStage('${d.id}','${k}')">${l}</button>`).join('');
   return `<div class="wcard">
+    ${back}
     <div class="wtop"><div><div class="wname">${d.name}</div><div class="worg">${d.org}</div></div>
       <div class="linkrow" style="margin:0"><a class="btnink" href="${d.link}" target="_blank" rel="noopener">Apply →</a></div></div>
-    <div class="ctrlbar" style="margin-top:16px">
+    <div class="wstagebar"><span class="clab">Stage</span>${stageSel}</div>
+    <div class="ctrlbar" style="margin-top:14px">
       <span class="clab">Tailored résumé</span>${tail}
       <button class="mini" onclick="tailorHandoff('${d.id}')">Tailor for this with Claude</button>
     </div>
     ${d.qa.map((x,j)=>`<div class="qa"><div class="q">${x.q}</div><textarea class="dans" id="ta-${d.id}-${j}" oninput="setAnswer('${d.id}',${j},this.value)">${esc(getAnswer(d.id,j))}</textarea>
       <div class="dansbtns"><button class="mini" onclick="copyText(document.getElementById('ta-${d.id}-${j}').value,'Copied')">Copy</button><button class="mini" onclick="answerFeedback('${d.id}',${j})">Get Claude's feedback</button><button class="mini" onclick="resetAnswer('${d.id}',${j})">Reset to draft</button></div></div>`).join('')}
-    <div class="linkrow"><button class="btnink" onclick="setStatus('${d.id}','Submitted');showPage('history')">Mark as submitted →</button>
+    <div class="linkrow"><button class="btnink" onclick="setStatus('${d.id}','Submitted');closeWrite();showPage('history')">Mark as submitted →</button>
       <span class="clab">${sv(d.id).status?('Status: '+sv(d.id).status):''}</span></div>
   </div>`;
 }
 function renderWrite(){
-  const list=DATA.filter(d=>sv(d.id).triage==='yes');
-  document.getElementById('write-list').innerHTML = list.length ? list.map(writeCard).join('')
-    : '<div class="empty">No applications in progress yet.<small>Go to Discover and say “Yes” to an opportunity to start writing here.</small></div>';
+  const host=document.getElementById('write-list');
+  const list=DATA.filter(d=>sv(d.id).triage==='yes' && !sv(d.id).status);
+  if(!list.length){ writeOpen=null; host.innerHTML='<div class="empty">No applications in progress yet.<small>Go to Discover and say “Yes” to an opportunity to start writing here.</small></div>'; return; }
+  if(writeOpen && list.some(d=>d.id===writeOpen)){ host.innerHTML=writeEditor(byId(writeOpen),false); return; }
+  writeOpen=null;
+  if(writeView==='list'){ host.innerHTML=`<div class="wtoolbar"><span class="wsum">${list.length} in progress</span>${viewToggle()}</div>`+list.map(d=>writeEditor(d,true)).join(''); return; }
+  const cols=WSTAGES.map(([k,lab])=>{
+    const items=list.filter(d=>wstageOf(d)===k);
+    const cards=items.length?items.map(writeMini).join(''):'<div class="wcol-empty">Nothing here</div>';
+    return `<div class="wcol"><div class="wcol-h">${lab}<span class="c">${items.length}</span></div>${cards}</div>`;
+  }).join('');
+  const ready=list.filter(d=>wstageOf(d)==='ready').length;
+  const strip=`<span class="wsum">${list.length} in progress${ready?` · <b>${ready} ready to submit</b>`:''}</span>`;
+  host.innerHTML=`<div class="wtoolbar">${strip}${viewToggle()}</div><div class="wboard">${cols}</div>`;
 }
 
 /* ---------- HISTORY ---------- */
