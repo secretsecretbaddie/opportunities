@@ -34,6 +34,43 @@
   ::selection{background:var(--accent-subtle);}
   .tnum{font-variant-numeric:tabular-nums;}
   .wrap{max-width:1120px;margin:0 auto;padding:48px 32px 112px;}
+  /* sidebar shell */
+  .shell{display:flex;max-width:1300px;margin:0 auto;min-height:100vh;}
+  .sidebar{width:240px;flex:none;background:var(--bg-subtle);border-right:1px solid var(--rule);padding:22px 12px 20px;position:sticky;top:0;height:100vh;overflow-y:auto;display:flex;flex-direction:column;gap:1px;}
+  .sb-brand{display:flex;align-items:center;gap:9px;padding:2px 8px 18px;}
+  .sb-mark{width:22px;height:22px;border-radius:6px;background:var(--accent);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;font-family:var(--display);flex:none;}
+  .sb-nav{display:flex;flex-direction:column;gap:1px;}
+  .sb-nav button{display:flex;align-items:center;gap:9px;width:100%;border:0;background:0;padding:7px 9px;border-radius:6px;font-family:var(--sans);font-size:13.5px;font-weight:500;color:var(--ink2);cursor:pointer;text-align:left;transition:background var(--t),color var(--t);}
+  .sb-nav button:hover{background:var(--hover);color:var(--ink);}
+  .sb-nav button.on{background:var(--accent-subtle);color:var(--accent-ink);}
+  .sb-ico{width:17px;text-align:center;font-size:13px;color:var(--ink3);flex:none;}
+  .sb-nav button.on .sb-ico{color:var(--accent-ink);}
+  .sb-lab{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+  .sb-c{font-size:11px;color:var(--faint);font-variant-numeric:tabular-nums;} .sb-c:empty{display:none;}
+  .sb-nav button.on .sb-c{color:var(--accent-ink);}
+  .sb-sec{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);font-weight:600;padding:18px 10px 7px;}
+  .sb-foot{margin-top:auto;padding:16px 10px 2px;display:flex;flex-direction:column;gap:4px;border-top:1px solid var(--rule);}
+  .sb-user{font-size:13px;font-weight:500;color:var(--ink2);} .sb-priv{font-size:11px;color:var(--ink3);line-height:1.45;}
+  .maincol{flex:1;min-width:0;padding:40px 44px 100px;}
+  .sb-open{display:none;} .scrim{display:none;}
+  @media(max-width:860px){
+    .shell{display:block;max-width:none;}
+    .sidebar{position:fixed;top:0;left:0;bottom:0;width:266px;transform:translateX(-100%);transition:transform .22s ease;z-index:85;box-shadow:0 8px 40px rgba(20,20,22,.16);}
+    .shell.nav-open .sidebar{transform:none;}
+    .scrim{display:block;position:fixed;inset:0;background:rgba(20,20,22,.30);opacity:0;pointer-events:none;transition:opacity .2s;z-index:84;}
+    .shell.nav-open .scrim{opacity:1;pointer-events:auto;}
+    .maincol{padding:18px 18px 90px;}
+    .sb-open{display:inline-flex;align-items:center;gap:8px;margin-bottom:18px;border:1px solid var(--rule2);background:var(--card);border-radius:var(--radius-sm);padding:8px 13px;font-size:13px;font-weight:500;color:var(--ink2);cursor:pointer;font-family:var(--sans);}
+  }
+  /* Notion-style category icons + soft tags */
+  .rowic{display:inline-block;width:20px;font-size:15px;line-height:1;flex:none;}
+  .ntag{display:inline-flex;align-items:center;font-size:11px;font-weight:500;line-height:1;padding:3px 8px;border-radius:5px;background:var(--wash);color:var(--ink2);border:1px solid var(--rule);}
+  .ntag.cat-org{background:#EEF0FB;color:#4E59BE;border-color:#E3E6F7;}
+  .ntag.cat-int{background:#EAF4EE;color:#3E7256;border-color:#DBEBE1;}
+  .ntag.cat-con{background:#FAF0E6;color:#8C6132;border-color:#F0E2D0;}
+  .ntag.cat-misc{background:var(--wash);color:var(--ink2);border-color:var(--rule);}
+  .wm-ic{margin-right:7px;font-size:14px;} .wm-tags{margin-top:8px;}
+  .wname .rowic{width:auto;margin-right:8px;font-size:16px;}
   a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;text-underline-offset:2px;}
   :focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 
@@ -89,10 +126,10 @@
 
   /* list */
   .item{border-bottom:1px solid var(--rule);}
-  .row{display:grid;grid-template-columns:26px 1fr auto;gap:16px;align-items:center;padding:18px 10px;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t);}
+  .row{display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center;padding:18px 10px;cursor:pointer;border-radius:var(--radius-sm);transition:background var(--t);}
   .row:hover{background:var(--hover);}
   .idx{font-size:12px;color:var(--faint);font-variant-numeric:tabular-nums;}
-  .tt{font-size:16px;line-height:1.35;font-weight:600;letter-spacing:-0.011em;color:var(--ink);}
+  .tt{font-size:16px;line-height:1.35;font-weight:600;letter-spacing:-0.011em;color:var(--ink);display:flex;align-items:center;}
   .oo{font-size:13px;color:var(--ink2);margin-top:4px;display:flex;align-items:center;flex-wrap:wrap;}
   .rr{display:flex;align-items:center;justify-content:flex-end;gap:12px;white-space:nowrap;min-height:28px;}
   .stt{display:inline-flex;align-items:center;gap:7px;font-size:12px;color:var(--ink2);}
@@ -263,22 +300,27 @@
   </div>
 </div>
 
-<div class="wrap">
-  <div class="nav">
-    <div class="brand"><span class="brandname">Nadyne's Tracker</span></div>
-    <div class="navtabs" id="navtabs">
-      <button data-p="discover" class="on">Discover</button>
-      <button data-p="write">Apply</button>
-      <button data-p="history">History</button>
-    </div>
-    <div class="navr">
-      <button class="rbtn" onclick="exportData()">Export</button>
-      <button class="rbtn" onclick="document.getElementById('importFile').click()">Import</button>
-      <button class="rbtn" onclick="openResume()">Résumé</button>
-      <span class="dateline">Nadyne Apung</span>
+<div class="shell" id="shell">
+  <div class="scrim" onclick="closeNav()"></div>
+  <aside class="sidebar" id="sidebar">
+    <div class="sb-brand"><span class="sb-mark">N</span><span class="brandname">Nadyne's Tracker</span></div>
+    <nav class="sb-nav" id="navtabs">
+      <button data-p="discover" class="on"><span class="sb-ico">◎</span><span class="sb-lab">Discover</span><span class="sb-c" data-nav="discover"></span></button>
+      <button data-p="write"><span class="sb-ico">✎</span><span class="sb-lab">Apply</span><span class="sb-c" data-nav="apply"></span></button>
+      <button data-p="history"><span class="sb-ico">◷</span><span class="sb-lab">History</span><span class="sb-c" data-nav="history"></span></button>
+    </nav>
+    <div class="sb-sec">Workspace</div>
+    <div class="sb-nav">
+      <button onclick="openAdd();closeNav()"><span class="sb-ico">＋</span><span class="sb-lab">Add opportunity</span></button>
+      <button onclick="openResume();closeNav()"><span class="sb-ico">▤</span><span class="sb-lab">Résumé</span></button>
+      <button onclick="exportData()"><span class="sb-ico">↓</span><span class="sb-lab">Export backup</span></button>
+      <button onclick="document.getElementById('importFile').click()"><span class="sb-ico">↑</span><span class="sb-lab">Import backup</span></button>
       <input type="file" id="importFile" accept="application/json" style="display:none" onchange="if(this.files[0])importData(this.files[0])">
     </div>
-  </div>
+    <div class="sb-foot"><span class="sb-user">Nadyne Apung</span><span class="sb-priv">Résumé &amp; history stay in this browser only.</span></div>
+  </aside>
+  <div class="maincol">
+    <button class="sb-open" onclick="openNav()" aria-label="Open menu">☰ Menu</button>
 
   <div id="privbanner" style="display:none;font-size:13px;color:var(--ink3);padding:11px 0;margin-bottom:4px;border-bottom:1px solid var(--rule);">Résumé &amp; history stay in this browser only. <button class="link" onclick="document.getElementById('importFile').click()">Import backup</button> to load them here.</div>
 
@@ -342,6 +384,7 @@
     <div id="hist-list"></div>
   </section>
 
+  </div>
 </div>
 
 <div class="rov" id="rov">
@@ -1091,6 +1134,10 @@ const dotsHTML=n=>{let h='<span class="dots">';for(let i=1;i<=5;i++)h+=`<span cl
 const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const pad=i=>String(i).padStart(2,'0');
 const catOf=d=>d.cat||"Organization";
+const CAT_META={Organization:['🏛️','cat-org'],Internship:['💼','cat-int'],Conference:['🎤','cat-con'],Miscellaneous:['✦','cat-misc']};
+function catMeta(d){ return CAT_META[catOf(d)]||['✦','cat-misc']; }
+function catIcon(d){ return catMeta(d)[0]; }
+function catTag(d){ return `<span class="ntag ${catMeta(d)[1]}">${catOf(d)}</span>`; }
 const CATS=["Organization","Internship","Conference","Miscellaneous"];
 const STATUSES=["To apply","Submitted","Waiting","Accepted","Denied"];
 const HSTATUSES=["Pending","Waiting","Submitted","Accepted","Denied"];
@@ -1135,8 +1182,16 @@ function toast(m){ const e=document.getElementById('toast'); if(!e)return; e.tex
 
 /* ---------- router ---------- */
 let page="discover";
-function showPage(p){ page=p; document.querySelectorAll('.page').forEach(s=>s.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); document.querySelectorAll('#navtabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===p)); window.scrollTo(0,0); renderAll(); }
+function showPage(p){ page=p; document.querySelectorAll('.page').forEach(s=>s.classList.remove('active')); document.getElementById('page-'+p).classList.add('active'); document.querySelectorAll('#navtabs button').forEach(b=>b.classList.toggle('on',b.dataset.p===p)); closeNav(); window.scrollTo(0,0); renderAll(); }
 document.querySelectorAll('#navtabs button').forEach(b=>b.addEventListener('click',()=>showPage(b.dataset.p)));
+function openNav(){ const s=document.getElementById('shell'); if(s) s.classList.add('nav-open'); }
+function closeNav(){ const s=document.getElementById('shell'); if(s) s.classList.remove('nav-open'); }
+function updateNav(){
+  const apply=DATA.filter(d=>sv(d.id).triage==='yes'&&!sv(d.id).status).length;
+  const disc=OPPS.filter(d=>!sv(d.id).status&&!sv(d.id).triage).length;
+  const set=(k,v)=>{ const e=document.querySelector('[data-nav="'+k+'"]'); if(e) e.textContent=v||''; };
+  set('apply',apply); set('discover',disc);
+}
 
 /* ---------- DISCOVER ---------- */
 let discFilter="new", discQ="", discSort="best";
@@ -1159,8 +1214,7 @@ function discItem(d,i){
   const s=sv(d.id), sm=smeta(d.status), opened=openSet.has(d.id), tri=s.triage, chip=deadlineChip(d), eg=eligParse(d.elig);
   return `<div class="item" id="row-${d.id}">
     <div class="row" role="button" tabindex="0" aria-expanded="${opened}" onclick="toggle('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();toggle('${d.id}');}">
-      <div class="idx tnum">${pad(i)}</div>
-      <div><div class="tt">${d.name}</div><div class="oo">${d.org}${tri?` &nbsp;·&nbsp; <span class="badge ${triCls(tri)}">${triLabel(tri)}</span>`:''}</div></div>
+      <div><div class="tt"><span class="rowic">${catIcon(d)}</span>${d.name}</div><div class="oo">${d.org}${tri?` &nbsp;·&nbsp; <span class="badge ${triCls(tri)}">${triLabel(tri)}</span>`:''}</div></div>
       <div class="rr">
         <span class="meta"><span class="dl ${chip.cls}">${chip.txt}</span><span title="Portfolio match ${d.match}/5">${dotsHTML(d.match)}</span></span>
         <span class="quick">
@@ -1242,7 +1296,8 @@ function writeMini(d){
   const chip=deadlineChip(d), a=wAnswered(d), t=d.qa.length, st=wstageOf(d);
   const moves=[['start','To start'],['draft','Draft'],['ready','Ready']].map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="event.stopPropagation();setWStage('${d.id}','${k}')">${l}</button>`).join('');
   return `<div class="wmini" role="button" tabindex="0" onclick="openWrite('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWrite('${d.id}');}">
-    <div class="wm-name">${d.name}</div><div class="wm-org">${d.org}</div>
+    <div class="wm-name"><span class="wm-ic">${catIcon(d)}</span>${d.name}</div><div class="wm-org">${d.org}</div>
+    <div class="wm-tags">${catTag(d)}</div>
     <div class="wm-meta"><span class="dl ${chip.cls}">${chip.txt}</span><span class="wm-prog">${a}/${t} drafted</span></div>
     <div class="wm-stage">${moves}</div>
   </div>`;
@@ -1254,7 +1309,7 @@ function writeEditor(d,inList){
   const stageSel=WSTAGES.map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="setWStage('${d.id}','${k}')">${l}</button>`).join('');
   return `<div class="wcard">
     ${back}
-    <div class="wtop"><div><div class="wname">${d.name}</div><div class="worg">${d.org}</div></div>
+    <div class="wtop"><div><div class="wname"><span class="rowic">${catIcon(d)}</span>${d.name}</div><div class="worg">${d.org} &nbsp;·&nbsp; ${catTag(d)}</div></div>
       <div class="linkrow" style="margin:0"><a class="btnink" href="${d.link}" target="_blank" rel="noopener">Apply →</a></div></div>
     <div class="wstagebar"><span class="clab">Stage</span>${stageSel}</div>
     <div class="ctrlbar" style="margin-top:14px">
@@ -1336,7 +1391,7 @@ function renderThisWeek(){
   el.innerHTML=html;
 }
 function jumpTo(id){ openSet.add(id); if(page!=='discover'){ showPage('discover'); } else { renderDiscover(); } const el=document.getElementById('row-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
-function renderAll(){ renderDiscover(); renderThisWeek(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); }
+function renderAll(){ renderDiscover(); renderThisWeek(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); updateNav(); }
 
 /* ---------- calendar + upcoming ---------- */
 let calRef, userNav=false;
