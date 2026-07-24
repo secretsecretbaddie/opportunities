@@ -253,6 +253,15 @@
   .wsp:hover{color:var(--ink2);background:var(--hover);} .wsp.on{background:var(--accent-subtle);border-color:var(--accent-subtle);color:var(--accent-ink);}
   .wstagebar{display:flex;align-items:center;gap:7px;margin:14px 0 2px;flex-wrap:wrap;} .wstagebar .wsp{flex:0 0 auto;padding:5px 12px;font-size:12px;}
   .wm-submit{width:100%;margin-top:9px;background:var(--accent);color:#fff;border:0;border-radius:5px;font-family:var(--sans);font-size:12px;font-weight:600;padding:8px;cursor:pointer;transition:background var(--t);} .wm-submit:hover{background:var(--accent-ink);}
+  /* momentum focus banner */
+  .focus{display:flex;align-items:center;justify-content:space-between;gap:18px;background:linear-gradient(180deg,var(--accent-subtle),#F6F7FD);border:1px solid #E3E6F7;border-radius:var(--radius);padding:15px 18px;margin:0 0 20px;}
+  .focus.ready{border-color:var(--accent);}
+  .focus-lab{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent-ink);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:7px;}
+  .focus-lab .dl{min-width:0;letter-spacing:0;text-transform:none;font-weight:600;}
+  .focus-name{font-family:var(--display);font-size:16px;font-weight:600;letter-spacing:-0.012em;color:var(--ink);display:flex;align-items:center;}
+  .focus-step{font-size:13px;color:var(--ink2);margin-top:4px;line-height:1.45;max-width:56ch;}
+  .focus-cta{flex:none;white-space:nowrap;}
+  @media(max-width:560px){ .focus{flex-direction:column;align-items:stretch;gap:12px;} .focus-cta{width:100%;text-align:center;} }
   .backlink{border:0;background:0;color:var(--ink3);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;padding:0;margin-bottom:16px;transition:color var(--t);} .backlink:hover{color:var(--accent);}
   /* requirements checklist */
   .reqbox{border:1px solid var(--rule);border-radius:var(--radius);background:var(--bg-subtle);padding:15px 16px;margin:18px 0 6px;}
@@ -635,6 +644,35 @@ function renderDiscover(){
 /* ---------- WRITE (Apply board) ---------- */
 let writeView="board", writeOpen=null;
 const WSTAGES=[['start','Not started'],['draft','Drafting'],['ready','Ready to submit']];
+/* ---- Momentum: gentle motivation to actually submit ---- */
+const SENTKEY="nadyne.sent.v1"; let SENT={count:0,last:null};
+try{ const s=localStorage.getItem(SENTKEY); if(s) SENT=JSON.parse(s); }catch(e){}
+function sentPersist(){ if(!STORE_OK)return; try{ localStorage.setItem(SENTKEY, JSON.stringify(SENT)); }catch(e){} }
+function sentMsg(n){ return n===1 ? 'First one sent — that’s the hardest one done. 🎉' : 'Sent! That’s '+n+' now. Keep the momentum.'; }
+function celebrate(){
+  try{ if(matchMedia('(prefers-reduced-motion:reduce)').matches) return; }catch(e){}
+  const c=document.createElement('canvas'); c.style.cssText='position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:300';
+  c.width=innerWidth; c.height=innerHeight; document.body.appendChild(c); const ctx=c.getContext('2d');
+  const cols=['#5E6AD2','#4E59BE','#8B93E0','#B7A0E8','#F2C879','#7FB88B','#E29AB0'];
+  const P=Array.from({length:130},()=>({x:c.width*(.35+Math.random()*.3), y:c.height*.28, vx:(Math.random()-.5)*11, vy:Math.random()*-13-3, g:.32+Math.random()*.22, s:Math.random()*7+4, rot:Math.random()*6.28, vr:(Math.random()-.5)*.5, col:cols[Math.floor(Math.random()*cols.length)]}));
+  let t=0; (function frame(){ t++; ctx.clearRect(0,0,c.width,c.height); P.forEach(p=>{ p.vy+=p.g; p.x+=p.vx; p.y+=p.vy; p.rot+=p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot); ctx.globalAlpha=Math.max(0,1-t/95); ctx.fillStyle=p.col; ctx.fillRect(-p.s/2,-p.s/2,p.s,p.s*.62); ctx.restore(); }); if(t<95) requestAnimationFrame(frame); else c.remove(); })();
+}
+function markSubmitted(id){
+  wMenuId=null; if(sv(id).status==='Submitted') return;
+  SAVED[id]=SAVED[id]||{}; SAVED[id].status='Submitted'; cleanup(id); persist();
+  SENT.count=(SENT.count||0)+1; SENT.last=new Date().toISOString().slice(0,10); sentPersist();
+  renderAll(); celebrate(); toast(sentMsg(SENT.count));
+}
+/* pick the single application most worth doing now, and its smallest next step */
+function focusPick(list){ const dl=d=>{ const x=daysLeft(d); return x==null?1e5:x<0?99999:x; }; return list.slice().sort((a,b)=>dl(a)-dl(b)||wByDate(a,b))[0]; }
+function focusStep(d){
+  const st=wstageOf(d), ans=wAnswered(d), tot=d.qa.length, reqs=reqsOf(d.id), rd=reqDone(d.id);
+  if(st==='ready') return {msg:"It’s ready — you’re one click from done.", cta:'Mark submitted →', act:`markSubmitted('${d.id}')`, primary:true};
+  if(ans===0) return {msg:"Just write one rough sentence for the first question — that’s the whole job right now.", cta:'Open →', act:`openWrite('${d.id}')`};
+  if(ans<tot) return {msg:`You’re ${ans}/${tot} through the answers. Finish one more and you’re nearly there.`, cta:'Open →', act:`openWrite('${d.id}')`};
+  if(reqs.length&&rd<reqs.length) return {msg:`Answers drafted — ${rd}/${reqs.length} requirements checked off. Knock out the rest.`, cta:'Open →', act:`openWrite('${d.id}')`};
+  return {msg:"Give it one last read, then move it to Ready.", cta:'Open →', act:`openWrite('${d.id}')`};
+}
 function wAnswered(d){ const s=SAVED[d.id]; if(!s||!s.answers) return 0; let n=0; d.qa.forEach((q,j)=>{ const v=s.answers[j]; if(v!=null && String(v).trim()!=='') n++; }); return n; }
 function wstageOf(d){ const s=sv(d.id); if(s.wstage) return s.wstage; return wAnswered(d)>0 ? 'draft' : 'start'; }
 function setWStage(id,s){ SAVED[id]=SAVED[id]||{}; SAVED[id].wstage=s; persist(); renderWrite(); }
@@ -697,7 +735,7 @@ function wByDate(a,b){ const A=a.date||null, B=b.date||null; if(A&&B) return A<B
 /* per-card actions menu (⋯) */
 let wMenuId=null;
 function toggleWMenu(id){ wMenuId = wMenuId===id?null:id; renderWrite(); }
-function submitFromBoard(id){ wMenuId=null; setStatus(id,'Submitted'); toast('Marked submitted → moved to History'); }
+function submitFromBoard(id){ markSubmitted(id); }
 function withdrawApp(id){ wMenuId=null; SAVED[id]=SAVED[id]||{}; SAVED[id].triage='no'; delete SAVED[id].wstage; cleanup(id); persist(); renderAll(); toast('Removed — marked “won’t apply”. Find it under Dismissed in Discover.'); }
 document.addEventListener('click',function(e){ if(wMenuId && !e.target.closest('.wm-menu') && !e.target.closest('.wm-more')){ wMenuId=null; renderWrite(); } });
 function viewToggle(){ return `<div class="vtoggle"><button class="${writeView==='board'?'on':''}" onclick="setWriteView('board')">Board</button><button class="${writeView==='list'?'on':''}" onclick="setWriteView('list')">List</button></div>`; }
@@ -755,7 +793,7 @@ function writeEditor(d,inList){
     ${reqBlock(d.id)}
     ${d.qa.map((x,j)=>`<div class="qa"><div class="q">${x.q}</div><textarea class="dans" id="ta-${d.id}-${j}" oninput="setAnswer('${d.id}',${j},this.value)">${esc(getAnswer(d.id,j))}</textarea>
       <div class="dansbtns"><button class="mini" onclick="copyText(document.getElementById('ta-${d.id}-${j}').value,'Copied')">Copy</button><button class="mini" onclick="answerFeedback('${d.id}',${j})">Get Claude's feedback</button><button class="mini" onclick="resetAnswer('${d.id}',${j})">Reset to draft</button></div></div>`).join('')}
-    <div class="linkrow"><button class="btnink" onclick="setStatus('${d.id}','Submitted');closeWrite();showPage('history')">Mark as submitted →</button>
+    <div class="linkrow"><button class="btnink" onclick="markSubmitted('${d.id}')">Mark as submitted →</button>
       <button class="btnghost" onclick="withdrawApp('${d.id}');closeWrite();">Won't apply</button>
       <span class="clab">${sv(d.id).status?('Status: '+sv(d.id).status):''}</span></div>
   </div>`;
@@ -773,8 +811,17 @@ function renderWrite(){
     return `<div class="wcol" data-stage="${k}"><div class="wcol-h">${lab}<span class="c">${items.length}</span></div>${cards}</div>`;
   }).join('');
   const ready=list.filter(d=>wstageOf(d)==='ready').length;
-  const strip=`<span class="wsum">${list.length} in progress${ready?` · <b>${ready} ready to submit</b>`:''}</span>`;
-  host.innerHTML=`<div class="wtoolbar">${strip}${viewToggle()}</div><div class="wboard">${cols}</div>`;
+  const strip=`<span class="wsum">${list.length} in progress${ready?` · <b>${ready} ready to submit</b>`:''}${SENT.count?` · ${SENT.count} sent`:''}</span>`;
+  const pick=focusPick(list), step=focusStep(pick), fchip=deadlineChip(pick), fdl=daysLeft(pick);
+  const focus=`<div class="focus${step.primary?' ready':''}">
+    <div class="focus-main">
+      <div class="focus-lab">Start here${fdl!=null?` · <span class="dl ${fchip.cls}">${fchip.txt}</span>`:''}</div>
+      <div class="focus-name"><span class="rowic">${catIcon(pick)}</span>${pick.name}</div>
+      <div class="focus-step">${step.msg}</div>
+    </div>
+    <button class="btnink focus-cta" onclick="${step.act}">${step.cta}</button>
+  </div>`;
+  host.innerHTML=`<div class="wtoolbar">${strip}${viewToggle()}</div>${focus}<div class="wboard">${cols}</div>`;
 }
 
 /* ---------- HISTORY ---------- */
