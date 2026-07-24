@@ -230,9 +230,11 @@
   .wcol-h{display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:600;padding:4px 4px 12px;}
   .wcol-h .c{font-variant-numeric:tabular-nums;color:var(--faint);font-weight:600;}
   .wcol-empty{font-size:12px;color:var(--faint);padding:10px 4px;text-align:center;}
-  .wmini{background:var(--card);border:1px solid var(--rule2);border-radius:var(--radius-sm);padding:12px 13px;margin-bottom:10px;cursor:grab;transition:border-color var(--t),box-shadow var(--t),opacity var(--t);}
+  .wmini{background:var(--card);border:1px solid var(--rule2);border-radius:var(--radius-sm);padding:12px 13px;margin-bottom:10px;cursor:grab;touch-action:pan-y;-webkit-user-select:none;user-select:none;transition:border-color var(--t),box-shadow var(--t),opacity var(--t);}
   .wmini:last-child{margin-bottom:0;} .wmini:hover{border-color:var(--faint);box-shadow:0 1px 3px rgba(31,32,35,.06);}
-  .wmini:active{cursor:grabbing;} .wmini.dragging{opacity:.4;}
+  .wmini:active{cursor:grabbing;} .wmini.dragging{opacity:.35;}
+  .dragclone{position:fixed;z-index:200;pointer-events:none;margin:0;box-shadow:0 12px 34px rgba(20,20,22,.22);transform:rotate(1.5deg);opacity:.97;}
+  body.wdragging{cursor:grabbing;} body.wdragging *{cursor:grabbing!important;}
   .wcol.drop{background:var(--accent-subtle);box-shadow:inset 0 0 0 1px var(--accent);} .wcol.drop .wcol-empty{color:var(--accent-ink);}
   .wm-name{font-size:13.5px;font-weight:600;line-height:1.35;letter-spacing:-0.006em;color:var(--ink);}
   .wm-org{font-size:12px;color:var(--ink3);margin-top:2px;}
@@ -1309,14 +1311,57 @@ const WSTAGES=[['start','Not started'],['draft','Drafting'],['ready','Ready to s
 function wAnswered(d){ const s=SAVED[d.id]; if(!s||!s.answers) return 0; let n=0; d.qa.forEach((q,j)=>{ const v=s.answers[j]; if(v!=null && String(v).trim()!=='') n++; }); return n; }
 function wstageOf(d){ const s=sv(d.id); if(s.wstage) return s.wstage; return wAnswered(d)>0 ? 'draft' : 'start'; }
 function setWStage(id,s){ SAVED[id]=SAVED[id]||{}; SAVED[id].wstage=s; persist(); renderWrite(); }
-/* drag & drop between stage columns (desktop; buttons remain for touch) */
-let wDragId=null;
-function wDragStart(e,id){ wDragId=id; try{ e.dataTransfer.effectAllowed='move'; e.dataTransfer.setData('text/plain',id); }catch(_){}
-  const el=e.currentTarget; el.classList.add('dragging'); }
-function wDragEnd(e){ if(e.currentTarget) e.currentTarget.classList.remove('dragging'); document.querySelectorAll('.wcol.drop').forEach(c=>c.classList.remove('drop')); wDragId=null; }
-function wDragOver(e){ e.preventDefault(); try{ e.dataTransfer.dropEffect='move'; }catch(_){}; e.currentTarget.classList.add('drop'); }
-function wDragLeave(e){ const c=e.currentTarget; if(!c.contains(e.relatedTarget)) c.classList.remove('drop'); }
-function wDrop(e,stage){ e.preventDefault(); let id=wDragId; try{ id=id||e.dataTransfer.getData('text/plain'); }catch(_){}; document.querySelectorAll('.wcol.drop').forEach(c=>c.classList.remove('drop')); wDragId=null; if(id && wstageOf(byId(id))!==stage){ setWStage(id,stage); } }
+/* pointer-based drag between stage columns — reliable with a mouse, distinguishes click from drag.
+   Stage buttons remain as the touch/keyboard path. */
+let wDrag=null;
+function wPointerDown(e,id){
+  if(e.button!==undefined && e.button!==0) return;              // primary button only
+  if(e.target.closest('button,a,input,textarea,label,select')) return; // let controls handle themselves
+  const card=e.currentTarget;
+  wDrag={id, sx:e.clientX, sy:e.clientY, active:false, card, w:card.offsetWidth, col:null};
+  window.addEventListener('pointermove',wPointerMove);
+  window.addEventListener('pointerup',wPointerUp);
+  window.addEventListener('pointercancel',wPointerCancel);
+}
+function wPointerMove(e){
+  if(!wDrag) return;
+  const dx=e.clientX-wDrag.sx, dy=e.clientY-wDrag.sy;
+  if(!wDrag.active){
+    if(Math.hypot(dx,dy)<6) return;                            // below threshold → still a potential click
+    wDrag.active=true;
+    wDrag.card.classList.add('dragging');
+    const clone=wDrag.card.cloneNode(true);
+    clone.className='wmini dragclone'; clone.style.width=wDrag.w+'px'; clone.style.pointerEvents='none';
+    document.body.appendChild(clone); wDrag.clone=clone;
+    document.body.classList.add('wdragging');
+  }
+  e.preventDefault();
+  wDrag.clone.style.left=(e.clientX-wDrag.w/2)+'px';
+  wDrag.clone.style.top=(e.clientY-22)+'px';
+  const el=document.elementFromPoint(e.clientX,e.clientY);
+  const col=el&&el.closest?el.closest('.wcol'):null;
+  document.querySelectorAll('.wcol.drop').forEach(c=>{ if(c!==col) c.classList.remove('drop'); });
+  if(col) col.classList.add('drop');
+  wDrag.col=col;
+}
+function wDragCleanup(){
+  window.removeEventListener('pointermove',wPointerMove);
+  window.removeEventListener('pointerup',wPointerUp);
+  window.removeEventListener('pointercancel',wPointerCancel);
+  if(wDrag&&wDrag.clone) wDrag.clone.remove();
+  document.body.classList.remove('wdragging');
+  document.querySelectorAll('.wcol.drop').forEach(c=>c.classList.remove('drop'));
+  if(wDrag&&wDrag.card) wDrag.card.classList.remove('dragging');
+}
+function wPointerUp(e){
+  if(!wDrag){ wDragCleanup(); return; }
+  const d=wDrag;
+  if(!d.active){ wDragCleanup(); wDrag=null; openWrite(d.id); return; } // no real drag → treat as click
+  const stage=d.col?d.col.dataset.stage:null;
+  wDragCleanup(); wDrag=null;
+  if(stage && wstageOf(byId(d.id))!==stage) setWStage(d.id,stage);
+}
+function wPointerCancel(){ wDragCleanup(); wDrag=null; }
 function setWriteView(v){ writeView=v; writeOpen=null; renderWrite(); }
 function openWrite(id){ writeOpen=id; renderWrite(); window.scrollTo(0,0); }
 function closeWrite(){ writeOpen=null; renderWrite(); window.scrollTo(0,0); }
@@ -1344,7 +1389,7 @@ function reqBlock(id){
 function writeMini(d){
   const chip=deadlineChip(d), a=wAnswered(d), t=d.qa.length, st=wstageOf(d);
   const moves=[['start','To start'],['draft','Draft'],['ready','Ready']].map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="event.stopPropagation();setWStage('${d.id}','${k}')">${l}</button>`).join('');
-  return `<div class="wmini" role="button" tabindex="0" draggable="true" ondragstart="wDragStart(event,'${d.id}')" ondragend="wDragEnd(event)" onclick="openWrite('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWrite('${d.id}');}">
+  return `<div class="wmini" role="button" tabindex="0" onpointerdown="wPointerDown(event,'${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWrite('${d.id}');}">
     <div class="wm-name"><span class="wm-ic">${catIcon(d)}</span>${d.name}</div><div class="wm-org">${d.org}</div>
     <div class="wm-tags">${catTag(d)}${reqsOf(d.id).length?`<span class="ntag reqtag">✓ ${reqDone(d.id)}/${reqsOf(d.id).length}</span>`:''}</div>
     <div class="wm-meta"><span class="dl ${chip.cls}">${chip.txt}</span><span class="wm-prog">${a}/${t} drafted</span></div>
@@ -1382,7 +1427,7 @@ function renderWrite(){
   const cols=WSTAGES.map(([k,lab])=>{
     const items=list.filter(d=>wstageOf(d)===k);
     const cards=items.length?items.map(writeMini).join(''):'<div class="wcol-empty">Drop here</div>';
-    return `<div class="wcol" data-stage="${k}" ondragover="wDragOver(event)" ondragleave="wDragLeave(event)" ondrop="wDrop(event,'${k}')"><div class="wcol-h">${lab}<span class="c">${items.length}</span></div>${cards}</div>`;
+    return `<div class="wcol" data-stage="${k}"><div class="wcol-h">${lab}<span class="c">${items.length}</span></div>${cards}</div>`;
   }).join('');
   const ready=list.filter(d=>wstageOf(d)==='ready').length;
   const strip=`<span class="wsum">${list.length} in progress${ready?` · <b>${ready} ready to submit</b>`:''}</span>`;
