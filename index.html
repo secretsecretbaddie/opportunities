@@ -1158,7 +1158,13 @@ const esc=s=>(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const pad=i=>String(i).padStart(2,'0');
 const catOf=d=>d.cat||"Organization";
 const CAT_META={Organization:['🏛️','cat-org'],Internship:['💼','cat-int'],Conference:['🎤','cat-con'],Miscellaneous:['✦','cat-misc']};
-function catMeta(d){ return CAT_META[catOf(d)]||['✦','cat-misc']; }
+function catMeta(d){ const c=catOf(d); if(CAT_META[c]) return CAT_META[c]; const l=c.toLowerCase();
+  if(/fellow/.test(l)) return ['🎓','cat-int'];
+  if(/intern/.test(l)) return ['💼','cat-int'];
+  if(/conference|summit|forum|convening/.test(l)) return ['🎤','cat-con'];
+  if(/council|board|advisory|commission|delegate|committee/.test(l)) return ['🏛️','cat-org'];
+  if(/gender|women|srhr|feminis|rights/.test(l)) return ['💜','cat-org'];
+  return ['✦','cat-misc']; }
 function catIcon(d){ return catMeta(d)[0]; }
 function catTag(d){ return `<span class="ntag ${catMeta(d)[1]}">${catOf(d)}</span>`; }
 const CATS=["Organization","Internship","Conference","Miscellaneous"];
@@ -1299,7 +1305,9 @@ function renderDiscover(){
   const cmp = discSort==='deadline' ? (a,b)=>dv(a)-dv(b) : discSort==='match' ? (a,b)=>b.match-a.match : (a,b)=>priority(b)-priority(a);
   list.sort(cmp);
   let html='',n=0;
-  CATS.forEach(cat=>{ const items=list.filter(d=>catOf(d)===cat); if(!items.length)return; html+=`<div class="catgap">${cat}<span class="c">${pad(items.length)}</span></div>`; items.forEach(d=>{n++;html+=discItem(d,n);}); });
+  const present=[...new Set(list.map(catOf))];
+  const groups=CATS.filter(c=>present.includes(c)).concat(present.filter(c=>!CATS.includes(c)).sort());
+  groups.forEach(cat=>{ const items=list.filter(d=>catOf(d)===cat); if(!items.length)return; html+=`<div class="catgap">${cat}<span class="c">${pad(items.length)}</span></div>`; items.forEach(d=>{n++;html+=discItem(d,n);}); });
   const msg = discFilter==='no'?'Nothing dismissed.':discFilter==='yes'?'Nothing marked “Yes” yet.':discFilter==='maybe'?'Nothing marked “Maybe”.':'Nothing new right now.';
   document.getElementById('disc-list').innerHTML = html || `<div class="empty">${msg}<small>New matches arrive on the daily 9am refresh.</small></div>`;
   document.getElementById('disc-sub').textContent = OPPS.length+' open or due within 3 months';
