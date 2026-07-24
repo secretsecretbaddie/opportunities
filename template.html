@@ -241,6 +241,25 @@
   .wsp:hover{color:var(--ink2);background:var(--hover);} .wsp.on{background:var(--accent-subtle);border-color:var(--accent-subtle);color:var(--accent-ink);}
   .wstagebar{display:flex;align-items:center;gap:7px;margin:14px 0 2px;flex-wrap:wrap;} .wstagebar .wsp{flex:0 0 auto;padding:5px 12px;font-size:12px;}
   .backlink{border:0;background:0;color:var(--ink3);font-family:var(--sans);font-size:13px;font-weight:500;cursor:pointer;padding:0;margin-bottom:16px;transition:color var(--t);} .backlink:hover{color:var(--accent);}
+  /* requirements checklist */
+  .reqbox{border:1px solid var(--rule);border-radius:var(--radius);background:var(--bg-subtle);padding:15px 16px;margin:18px 0 6px;}
+  .reqhead{display:flex;align-items:center;justify-content:space-between;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);font-weight:600;margin-bottom:10px;}
+  .reqcount{font-variant-numeric:tabular-nums;color:var(--accent-ink);letter-spacing:0;text-transform:none;}
+  .reqlist{display:flex;flex-direction:column;gap:1px;margin-bottom:10px;}
+  .reqitem{display:flex;align-items:center;gap:10px;padding:7px 8px;border-radius:6px;cursor:pointer;transition:background var(--t);}
+  .reqitem:hover{background:var(--hover);} .reqitem:hover .reqx{opacity:1;}
+  .reqitem input{width:15px;height:15px;accent-color:var(--accent);flex:none;cursor:pointer;}
+  .reqt{flex:1;min-width:0;font-size:13.5px;color:var(--ink);}
+  .reqitem.done .reqt{color:var(--ink3);text-decoration:line-through;}
+  .reqx{border:0;background:0;color:var(--faint);font-size:12px;cursor:pointer;opacity:0;padding:2px 4px;transition:opacity var(--t),color var(--t);flex:none;} .reqx:hover{color:var(--ink2);}
+  .reqempty{font-size:13px;color:var(--ink3);padding:4px 2px 8px;line-height:1.5;}
+  .reqadd{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
+  .reqchip{border:1px dashed var(--rule2);background:0;border-radius:6px;font-family:var(--sans);font-size:12px;font-weight:500;color:var(--ink2);padding:5px 10px;cursor:pointer;transition:background var(--t),color var(--t),border-color var(--t);}
+  .reqchip:hover{background:var(--hover);color:var(--ink);border-color:var(--faint);}
+  .reqcustom{display:flex;gap:8px;}
+  .reqinput{flex:1;min-width:0;border:1px solid var(--rule2);border-radius:var(--radius-sm);background:var(--card);padding:8px 11px;font-family:var(--sans);font-size:13px;color:var(--ink);transition:border-color var(--t),box-shadow var(--t);}
+  .reqinput::placeholder{color:var(--ink3);} .reqinput:focus{outline:0;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-subtle);}
+  .ntag.reqtag{background:var(--wash);color:var(--ink2);border-color:var(--rule);}
   @media(max-width:760px){ .wboard{grid-template-columns:1fr;gap:12px;} .wcol{background:0;border:0;border-radius:0;padding:0;margin-bottom:4px;} .wcol-h{border-bottom:1px solid var(--rule);padding:6px 2px 10px;} .wcol-empty{text-align:left;} }
 
   /* rail */
@@ -478,7 +497,7 @@ let SAVED={}, STORE_OK=true;
 try{ localStorage.setItem("__t","1"); localStorage.removeItem("__t"); SAVED=JSON.parse(localStorage.getItem(SKEY)||"{}"); }catch(e){ STORE_OK=false; }
 function persist(){ if(!STORE_OK)return; try{ localStorage.setItem(SKEY, JSON.stringify(SAVED)); }catch(e){} }
 function sv(id){ return SAVED[id]||{}; }
-function cleanup(id){ const s=SAVED[id]; if(s && !s.triage && !s.status && !s.note && !s.appliedOn && !s.announce && !(s.answers&&Object.keys(s.answers).length)) delete SAVED[id]; }
+function cleanup(id){ const s=SAVED[id]; if(s && !s.triage && !s.status && !s.note && !s.appliedOn && !s.announce && !s.wstage && !(s.reqs&&s.reqs.length) && !(s.answers&&Object.keys(s.answers).length)) delete SAVED[id]; }
 function setTriage(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].triage = SAVED[id].triage===v?undefined:v; cleanup(id); persist(); renderAll(); }
 function setStatus(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].status = SAVED[id].status===v?undefined:v; cleanup(id); persist(); renderAll(); }
 function clearStatus(id){ if(SAVED[id]){ SAVED[id].status=undefined; cleanup(id); persist(); } renderAll(); toast('Moved back to Discover'); }
@@ -602,12 +621,32 @@ function setWriteView(v){ writeView=v; writeOpen=null; renderWrite(); }
 function openWrite(id){ writeOpen=id; renderWrite(); window.scrollTo(0,0); }
 function closeWrite(){ writeOpen=null; renderWrite(); window.scrollTo(0,0); }
 function viewToggle(){ return `<div class="vtoggle"><button class="${writeView==='board'?'on':''}" onclick="setWriteView('board')">Board</button><button class="${writeView==='list'?'on':''}" onclick="setWriteView('list')">List</button></div>`; }
+/* requirements checklist (per application) */
+const COMMON_REQS=["Application form","Résumé / CV","Written answers","Transcript","Portfolio / work samples","ID / eligibility docs"];
+function reqsOf(id){ const s=SAVED[id]; return (s&&Array.isArray(s.reqs))?s.reqs:[]; }
+function reqDone(id){ return reqsOf(id).filter(r=>r.d).length; }
+function addReq(id,label){ label=(label||'').trim(); if(!label)return; SAVED[id]=SAVED[id]||{}; SAVED[id].reqs=SAVED[id].reqs||[]; if(SAVED[id].reqs.some(r=>r.t.toLowerCase()===label.toLowerCase())){ toast('Already on the list'); return; } SAVED[id].reqs.push({t:label,d:false}); persist(); renderWrite(); }
+function toggleReq(id,i){ const s=SAVED[id]; if(!s||!s.reqs||!s.reqs[i])return; s.reqs[i].d=!s.reqs[i].d; persist(); renderWrite(); }
+function removeReq(id,i){ const s=SAVED[id]; if(!s||!s.reqs)return; s.reqs.splice(i,1); if(!s.reqs.length) delete s.reqs; cleanup(id); persist(); renderWrite(); }
+function addCustomReq(id){ const el=document.getElementById('reqin-'+id); if(!el)return; const v=el.value; el.value=''; addReq(id,v); }
+function reqBlock(id){
+  const items=reqsOf(id), done=items.filter(r=>r.d).length;
+  const rows = items.length ? items.map((r,i)=>`<label class="reqitem ${r.d?'done':''}"><input type="checkbox" ${r.d?'checked':''} onchange="toggleReq('${id}',${i})"><span class="reqt">${esc(r.t)}</span><button class="reqx" onclick="event.preventDefault();removeReq('${id}',${i})" aria-label="Remove requirement">✕</button></label>`).join('')
+    : '<div class="reqempty">No requirements yet — tap what this application needs, or add your own.</div>';
+  const chips = COMMON_REQS.filter(c=>!items.some(r=>r.t.toLowerCase()===c.toLowerCase())).map(c=>`<button class="reqchip" onclick="addReq('${id}',&quot;${c}&quot;)">+ ${c}</button>`).join('');
+  return `<div class="reqbox">
+    <div class="reqhead"><span>Requirements</span>${items.length?`<span class="reqcount">${done}/${items.length} done</span>`:''}</div>
+    <div class="reqlist">${rows}</div>
+    ${chips?`<div class="reqadd">${chips}</div>`:''}
+    <div class="reqcustom"><input class="reqinput" id="reqin-${id}" placeholder="Add your own…" onkeydown="if(event.key==='Enter'){event.preventDefault();addCustomReq('${id}');}"><button class="mini" onclick="addCustomReq('${id}')">Add</button></div>
+  </div>`;
+}
 function writeMini(d){
   const chip=deadlineChip(d), a=wAnswered(d), t=d.qa.length, st=wstageOf(d);
   const moves=[['start','To start'],['draft','Draft'],['ready','Ready']].map(([k,l])=>`<button class="wsp${st===k?' on':''}" onclick="event.stopPropagation();setWStage('${d.id}','${k}')">${l}</button>`).join('');
   return `<div class="wmini" role="button" tabindex="0" onclick="openWrite('${d.id}')" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();openWrite('${d.id}');}">
     <div class="wm-name"><span class="wm-ic">${catIcon(d)}</span>${d.name}</div><div class="wm-org">${d.org}</div>
-    <div class="wm-tags">${catTag(d)}</div>
+    <div class="wm-tags">${catTag(d)}${reqsOf(d.id).length?`<span class="ntag reqtag">✓ ${reqDone(d.id)}/${reqsOf(d.id).length}</span>`:''}</div>
     <div class="wm-meta"><span class="dl ${chip.cls}">${chip.txt}</span><span class="wm-prog">${a}/${t} drafted</span></div>
     <div class="wm-stage">${moves}</div>
   </div>`;
@@ -626,6 +665,7 @@ function writeEditor(d,inList){
       <span class="clab">Tailored résumé</span>${tail}
       <button class="mini" onclick="tailorHandoff('${d.id}')">Tailor for this with Claude</button>
     </div>
+    ${reqBlock(d.id)}
     ${d.qa.map((x,j)=>`<div class="qa"><div class="q">${x.q}</div><textarea class="dans" id="ta-${d.id}-${j}" oninput="setAnswer('${d.id}',${j},this.value)">${esc(getAnswer(d.id,j))}</textarea>
       <div class="dansbtns"><button class="mini" onclick="copyText(document.getElementById('ta-${d.id}-${j}').value,'Copied')">Copy</button><button class="mini" onclick="answerFeedback('${d.id}',${j})">Get Claude's feedback</button><button class="mini" onclick="resetAnswer('${d.id}',${j})">Reset to draft</button></div></div>`).join('')}
     <div class="linkrow"><button class="btnink" onclick="setStatus('${d.id}','Submitted');closeWrite();showPage('history')">Mark as submitted →</button>
