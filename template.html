@@ -152,12 +152,13 @@
   .qb.qm.on{border-color:var(--watch);color:var(--pill-amber-tx);background:var(--pill-amber-bg);}
   @media(hover:none){ .meta{display:flex!important;} .quick{display:flex!important;} .rr{flex-wrap:wrap;} }
   /* closing-soon — one quiet line, no candy */
-  .thisweek{display:flex;flex-wrap:wrap;gap:16px;align-items:baseline;margin:2px 0 20px;font-size:13px;}
+  .thisweek{display:flex;flex-wrap:wrap;gap:14px;align-items:baseline;margin:2px 0 20px;font-size:13px;}
   .thisweek:empty{display:none;}
   .twlabel{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:600;}
   .twlink{border:0;background:0;font-family:var(--sans);font-size:13px;color:var(--ink2);cursor:pointer;padding:0;}
   .twlink:hover{color:var(--ink);}
   .twlink b{color:var(--accent);font-variant-numeric:tabular-nums;font-weight:600;margin-right:5px;}
+  .twlink.more{color:var(--ink3);} .twlink.more:hover{color:var(--accent);}
   .etag{display:inline-block;font-size:11px;font-weight:500;color:var(--ink2);background:var(--wash);border:1px solid var(--rule2);border-radius:5px;padding:1px 7px;margin-right:7px;vertical-align:middle;}
   .etx{color:var(--ink2);font-size:13px;}
   /* controls: sort + add */
@@ -871,7 +872,9 @@ function renderThisWeek(){
   const inProg=DATA.filter(d=>sv(d.id).triage==='yes'&&!sv(d.id).status).length;
   if(!soon.length&&!inProg){ el.innerHTML=''; return; }
   let html='<span class="twlabel">Closing soon</span>';
-  soon.forEach(({d,dl})=>{ html+=`<button class="twlink" onclick="jumpTo('${d.id}')"><b>${dl===0?'Today':dl+'d'}</b>${esc(d.name.length>34?d.name.slice(0,32)+'…':d.name)}</button>`; });
+  const SHOW=2;
+  soon.slice(0,SHOW).forEach(({d,dl})=>{ html+=`<button class="twlink" onclick="jumpTo('${d.id}')"><b>${dl===0?'Today':dl+'d'}</b>${esc(d.name.length>22?d.name.slice(0,20)+'…':d.name)}</button>`; });
+  if(soon.length>SHOW) html+=`<button class="twlink more" onclick="discSort='deadline';var s=document.getElementById('disc-sort');if(s)s.value='deadline';renderDiscover();window.scrollTo(0,0);">+${soon.length-SHOW} more</button>`;
   if(inProg) html+=`<button class="twlink prog" onclick="showPage('write')"><b>${inProg}</b>in progress →</button>`;
   el.innerHTML=html;
 }
