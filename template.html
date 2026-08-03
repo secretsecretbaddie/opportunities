@@ -874,11 +874,13 @@ function renderThisWeek(){
   let html='<span class="twlabel">Closing soon</span>';
   const SHOW=2;
   soon.slice(0,SHOW).forEach(({d,dl})=>{ html+=`<button class="twlink" onclick="jumpTo('${d.id}')"><b>${dl===0?'Today':dl+'d'}</b>${esc(d.name.length>22?d.name.slice(0,20)+'…':d.name)}</button>`; });
-  if(soon.length>SHOW) html+=`<button class="twlink more" onclick="discSort='deadline';var s=document.getElementById('disc-sort');if(s)s.value='deadline';renderDiscover();window.scrollTo(0,0);">+${soon.length-SHOW} more</button>`;
+  if(soon.length>SHOW) html+=`<button class="twlink more" onclick="showClosingSoon()">+${soon.length-SHOW} more</button>`;
   if(inProg) html+=`<button class="twlink prog" onclick="showPage('write')"><b>${inProg}</b>in progress →</button>`;
   el.innerHTML=html;
 }
-function jumpTo(id){ openSet.add(id); if(page!=='discover'){ showPage('discover'); } else { renderDiscover(); } const el=document.getElementById('row-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+function setDiscFilter(f){ discFilter=f; document.querySelectorAll('#disc-tabs button').forEach(x=>x.classList.toggle('on',x.dataset.f===f)); }
+function jumpTo(id){ setDiscFilter('all'); openSet.add(id); if(page!=='discover'){ showPage('discover'); } else { renderDiscover(); renderThisWeek(); } const el=document.getElementById('row-'+id); if(el) el.scrollIntoView({behavior:'smooth',block:'center'}); }
+function showClosingSoon(){ setDiscFilter('all'); discSort='deadline'; var s=document.getElementById('disc-sort'); if(s)s.value='deadline'; if(page!=='discover'){ showPage('discover'); } else { renderDiscover(); renderThisWeek(); } window.scrollTo(0,0); }
 function renderAll(){ renderDiscover(); renderThisWeek(); renderWrite(); renderHistory(); anchorCal(); calRender(); upcoming(); updateNav(); }
 
 /* ---------- calendar + upcoming ---------- */
