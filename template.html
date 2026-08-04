@@ -377,7 +377,6 @@
             <button data-f="new" class="on">New <span class="tc" data-c="new">0</span></button>
             <button data-f="yes">Yes <span class="tc" data-c="yes">0</span></button>
             <button data-f="maybe">Maybe <span class="tc" data-c="maybe">0</span></button>
-            <button data-f="no">Dismissed <span class="tc" data-c="no">0</span></button>
             <button data-f="all">All <span class="tc" data-c="all">0</span></button>
           </div>
           <div class="rightbar">
@@ -502,7 +501,7 @@ const HSTATUSES=["Pending","Waiting","Submitted","Accepted","Denied"];
 const stCls=s=>({"Accepted":"b-acc","Denied":"b-den","Submitted":"b-sub","Waiting":"b-wait","To apply":"b-toapply"}[s]||"b-toapply");
 const triLabel=t=>({yes:"Tracker",maybe:"Maybe",no:"Dismissed"}[t]||"");
 const triCls=t=>({yes:"b-yes",maybe:"b-maybe",no:"b-no"}[t]||"");
-function inWindow(d){ if(d.status==='OPEN')return true; if(!d.date)return false; const dt=new Date(d.date+"T00:00:00"); const now=new Date(); now.setHours(0,0,0,0); const days=(dt-now)/86400000; return days>=0&&days<=93; }
+function inWindow(d){ const now=new Date(); now.setHours(0,0,0,0); let days=null; if(d.date){ days=(new Date(d.date+"T00:00:00")-now)/86400000; if(days<0) return false; /* expired: past deadline → drop */ } if(d.status==='OPEN') return true; if(days===null) return false; return days<=93; }
 /* user-added opportunities (stored only in this browser, merged into the list) */
 let USEROPPS=loadPriv('useropps',[]); if(Array.isArray(USEROPPS)&&USEROPPS.length) DATA.push(...USEROPPS);
 let OPPS=DATA.filter(inWindow);
@@ -528,6 +527,7 @@ function persist(){ if(!STORE_OK)return; try{ localStorage.setItem(SKEY, JSON.st
 function sv(id){ return SAVED[id]||{}; }
 function cleanup(id){ const s=SAVED[id]; if(s && !s.triage && !s.status && !s.note && !s.appliedOn && !s.announce && !s.wstage && !(s.reqs&&s.reqs.length) && !(s.answers&&Object.keys(s.answers).length)) delete SAVED[id]; }
 function setTriage(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].triage = SAVED[id].triage===v?undefined:v; cleanup(id); persist(); renderAll(); }
+function dismissOpp(id){ SAVED[id]=SAVED[id]||{}; SAVED[id].triage='no'; cleanup(id); persist(); renderAll(); const d=byId(id); toast('Dismissed'+(d?' — '+(d.name.length>28?d.name.slice(0,26)+'…':d.name):'')); }
 function setStatus(id,v){ SAVED[id]=SAVED[id]||{}; SAVED[id].status = SAVED[id].status===v?undefined:v; cleanup(id); persist(); renderAll(); }
 function clearStatus(id){ if(SAVED[id]){ SAVED[id].status=undefined; cleanup(id); persist(); } renderAll(); toast('Moved back to Discover'); }
 function setField(id,f,v){ SAVED[id]=SAVED[id]||{}; SAVED[id][f]=v||undefined; cleanup(id); persist(); if(f!=='note') renderAll(); }
@@ -578,7 +578,7 @@ function discItem(d,i){
         <span class="quick">
           <button class="qb qy${tri==='yes'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','yes')" title="Yes — add to tracker">Yes</button>
           <button class="qb qm${tri==='maybe'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','maybe')" title="Maybe">Maybe</button>
-          <button class="qb qn${tri==='no'?' on':''}" onclick="event.stopPropagation();setTriage('${d.id}','no')" title="Dismiss" aria-label="Dismiss">✕</button>
+          <button class="qb qn${tri==='no'?' on':''}" onclick="event.stopPropagation();dismissOpp('${d.id}')" title="Dismiss" aria-label="Dismiss">✕</button>
         </span>
       </div>
     </div>
@@ -595,7 +595,7 @@ function discItem(d,i){
       <div class="ctrlbar">
         <span class="clab">Add to tracker?</span>
         <div class="seg yes"><button class="${tri==='yes'?'on':''}" onclick="setTriage('${d.id}','yes')">Yes</button><button class="${tri==='maybe'?'on':''}" onclick="setTriage('${d.id}','maybe')">Maybe</button></div>
-        <div class="seg no"><button class="${tri==='no'?'on':''}" onclick="setTriage('${d.id}','no')">No, dismiss</button></div>
+        <div class="seg no"><button class="${tri==='no'?'on':''}" onclick="dismissOpp('${d.id}')">No, dismiss</button></div>
       </div>
       <div class="linkrow">
         <a class="btnghost" href="${d.link}" target="_blank" rel="noopener">Open application ↗</a>
@@ -620,7 +620,7 @@ function submitAdd(){
   closeAdd(); discFilter='new'; document.querySelectorAll('#disc-tabs button').forEach(x=>x.classList.toggle('on',x.dataset.f==='new')); renderAll(); toast('Added to Discover');
 }
 function renderDiscover(){
-  const base=OPPS.filter(d=>!sv(d.id).status); // once you've started applying (status set), it moves to History and leaves Discover
+  const base=OPPS.filter(d=>!sv(d.id).status && sv(d.id).triage!=='no'); // exclude submitted (→History) and dismissed (auto-deleted)
   const cnt={new:0,yes:0,maybe:0,no:0,all:base.length};
   base.forEach(d=>{const t=sv(d.id).triage; if(!t)cnt.new++; else cnt[t]=(cnt[t]||0)+1;});
   document.querySelectorAll('#disc-tabs .tc').forEach(el=>{ el.textContent=cnt[el.dataset.c]||0; });
@@ -868,7 +868,7 @@ function renderHistory(){
 
 function renderThisWeek(){
   const el=document.getElementById('thisweek'); if(!el) return;
-  const soon=OPPS.filter(d=>!sv(d.id).status).map(d=>({d,dl:daysLeft(d)})).filter(x=>x.dl!==null&&x.dl>=0&&x.dl<=21).sort((a,b)=>a.dl-b.dl);
+  const soon=OPPS.filter(d=>!sv(d.id).status && sv(d.id).triage!=='no').map(d=>({d,dl:daysLeft(d)})).filter(x=>x.dl!==null&&x.dl>=0&&x.dl<=21).sort((a,b)=>a.dl-b.dl);
   const inProg=DATA.filter(d=>sv(d.id).triage==='yes'&&!sv(d.id).status).length;
   if(!soon.length&&!inProg){ el.innerHTML=''; return; }
   let html='<span class="twlabel">Closing soon</span>';
