@@ -471,6 +471,90 @@ function loadPriv(k,f){ try{ const v=localStorage.getItem('nadyne.priv.'+k); ret
 function savePriv(k,v){ try{ localStorage.setItem('nadyne.priv.'+k, JSON.stringify(v)); }catch(e){} }
 const DATA = [
   {
+    "id": "unicef-global-girl-leaders",
+    "name": "Global Girl Leaders Advisory Group",
+    "org": "UNICEF",
+    "status": "WATCH",
+    "deadline": "Periodic recruitment — adolescent girls & young women (15–24) advise UNICEF on girl-centred, girl-led policy, including gender-based violence, child marriage and education access. No live application window is posted on the page today; next intake timing unconfirmed. verify with UNICEF youth-engagement channels",
+    "date": null,
+    "est": false,
+    "source": "UNICEF — Gender Equality",
+    "link": "https://www.unicef.org/gender-equality/global-girl-leaders-advisory-group",
+    "prestige": 5,
+    "difficulty": 4,
+    "match": 4,
+    "live": false,
+    "cat": "Women's & Girls' Rights · Gender · GBV",
+    "elig": "🌏 Open globally to adolescent girls & young women 15–24 (you're 19 ✓); nationality open — but no live intake is posted, so confirm the current recruitment cycle before counting on it",
+    "why": "High-signal UNICEF girls'-rights advisory seat covering gender-based violence and girl-led policy — squarely in your women's & girls' rights lane and a natural step up from your youth-council record.",
+    "qa": [
+      {
+        "q": "Am I eligible?",
+        "a": "Yes on paper — it's for girls and young women aged 15–24 from any country, and at 19 you fit. The catch is there's no open application window shown right now, so the real question is timing, not eligibility."
+      },
+      {
+        "q": "How do I find the next intake?",
+        "a": "The public page lists current members but not a call, so reach out through UNICEF's gender-equality / youth-engagement channels (or your local UNICEF National Committee) to ask when the group next recruits, and watch for a formal call."
+      }
+    ]
+  },
+  {
+    "id": "usasia-asean-diaspora-youth",
+    "name": "ASEAN Diaspora Youth Development Program",
+    "org": "US–Asia Institute",
+    "status": "WATCH",
+    "deadline": "Between cycles — 2026 cohort closed 31 Jan 2026. A 9-week civic-leadership program in Washington, D.C. for ASEAN-diaspora youth (18–25). Next cycle expected to open ~late 2026 for a 2027 cohort. verify reopen date on the program page",
+    "date": "2026-11-15",
+    "est": true,
+    "source": "US–Asia Institute",
+    "link": "https://www.usasiainstitute.org/asean-diaspora-youth-development-program",
+    "prestige": 4,
+    "difficulty": 3,
+    "match": 5,
+    "live": false,
+    "cat": "Youth Diplomacy · US–ASEAN · Foreign Policy",
+    "elig": "✅ Explicitly open to F-1 student-visa holders of ASEAN descent based in the US — Indonesia is named. You fit precisely (Indonesian citizen, F-1, enrolled undergrad, 19). Requires relocating to Washington, D.C. for the program",
+    "why": "A near-perfect eligibility fit: a US-based ASEAN-diaspora youth-diplomacy program in D.C. that builds directly on your US Embassy Youth Diplomacy Academy and US–ASEAN foreign-policy interests.",
+    "qa": [
+      {
+        "q": "Do I actually qualify on visa status?",
+        "a": "Yes — the program lists F-1 student-visa holders alongside citizens and permanent residents, and names Indonesia among eligible ASEAN origins, so your status and nationality both fit."
+      },
+      {
+        "q": "When should I apply?",
+        "a": "The 2026 round already closed (31 Jan 2026). Watch the program page from about November 2026 for the next cohort's call, and prepare your civic-engagement and diplomacy examples so you can move quickly when it opens."
+      }
+    ]
+  },
+  {
+    "id": "wagggs-advocacy-champions",
+    "name": "Global Advocacy Champions",
+    "org": "WAGGGS (World Assoc. of Girl Guides & Girl Scouts)",
+    "status": "INVESTIGATE",
+    "deadline": "Annual cohort — Champions advocate for girls' rights & gender equality up to the UN Commission on the Status of Women. The 2025–26 round opened Aug 2025 (so a new round likely recurs around the same time). Requires Girl Guide/Girl Scout membership. verify the current window and your membership route",
+    "date": null,
+    "est": false,
+    "source": "WAGGGS",
+    "link": "https://www.wagggs.org/en/news/wagggs-global-advocacy-champions-2025-26-applications-open/",
+    "prestige": 3,
+    "difficulty": 3,
+    "match": 3,
+    "live": false,
+    "cat": "Women's & Girls' Rights · Gender Equality · Advocacy",
+    "elig": "⚠️ Open to Girl Guides/Girl Scouts worldwide committed to gender equality — the gate is WAGGGS membership. Check whether you can join a Member Organisation (e.g. Girl Scouts of the USA) to qualify",
+    "why": "A girls'-rights advocacy pipeline running straight to the UN Commission on the Status of Women — on-theme gender-equality work, gated behind the Girl Guide/Scout membership you'd need to secure first.",
+    "qa": [
+      {
+        "q": "Can I apply if I'm not a Girl Guide/Scout?",
+        "a": "Not directly — the program is for existing members of a WAGGGS Member Organisation. Your realistic path is to join one first (for example Girl Scouts of the USA while you're studying in the US), then apply in the next Champions round."
+      },
+      {
+        "q": "Why is it worth the hassle?",
+        "a": "It plugs you into a global gender-equality advocacy network with a route to speak into the UN Commission on the Status of Women — strong on-theme experience that complements your SRHR and women's-rights work."
+      }
+    ]
+  },
+  {
     "id": "arcadia-ai-governance-taskforce-2026",
     "name": "AI Governance Taskforce — Autumn 2026 Cohort",
     "org": "Arcadia Impact",
@@ -730,8 +814,8 @@ const DATA = [
     "id": "icann-fellowship-2026",
     "name": "ICANN Fellowship Programme 2026",
     "org": "ICANN",
-    "status": "WATCH",
-    "deadline": "Current round closes 21 Aug 2026 — but minimum age is 21, so a future seat (recurs several times a year)",
+    "status": "OPEN",
+    "deadline": "Applications OPEN — closes 21 Aug 2026 (confirmed live in Opportunity Desk's August 2026 deadline round-ups). ICANN's fellowship funds newcomers from underserved communities to take part in ICANN public-meeting Internet-governance & digital-policy work. Travel & accommodation covered",
     "date": "2026-08-21",
     "est": false,
     "source": "Opportunity Desk (5 Aug 2026)",
@@ -739,7 +823,7 @@ const DATA = [
     "prestige": 4,
     "difficulty": 3,
     "match": 3,
-    "live": false,
+    "live": true,
     "cat": "Digital rights · Internet governance",
     "elig": "⚠️ Min age 21 — you're 19, so likely ineligible until ~2028; open to individuals from underserved/underrepresented communities, funded",
     "why": "A funded on-ramp into ICANN and internet-governance policy — worth bookmarking now and applying once you turn 21.",
